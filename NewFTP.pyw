@@ -26,10 +26,9 @@ class NameManager:
         return self.get_acnt(i)[1]
     def get_name(self, i):
         return self.get_acnt(i)[0]
-    def pagedown(self):
-        self.page = min(self.maxpage, self.page+1)
-    def pageup(self):
-        self.page = max(0, self.page-1)
+    def pageturn(self,d):
+        #d is either 1 or -1
+        self.page = max(0,min(self.maxpage, self.page+d))
     def launch(self, num):
         name=self.get_usr(num)
         name1 = name+':'+self.pas_dict.get(name,'123')+'@' if name else ''
