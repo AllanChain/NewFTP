@@ -116,7 +116,6 @@ def main():
                 elif event.type == MOUSEBUTTONUP:
                     if event.button == 1:
                         x0, y0 = event.pos
-                        if (x0 < 3 or x0 > size*3-3 or y0 < 3 or y0 > size*3-3):
                             continue
                         x, y = direction.get_mouse_direction(
                             start_pos, event.pos)
@@ -125,7 +124,7 @@ def main():
                             draw_text()
                         elif x == -1:
                             mini()
-                        else:
+                        elif (3 < x0 < size*3-3 or 3 < y0 < size*3-3):
                             mgr.launch((y//size)*3+x//size)
                             mini()
                     elif event.button == 3:
@@ -140,8 +139,6 @@ def main():
                         draw_text()
                     elif event.key == 276:
                         mini()
-                    elif event.key == 13:
-                        maxi()
                 elif event.type == ACTIVEEVENT:
                     if event.gain == 0 and event.state == 2:
                         mini()
@@ -153,13 +150,16 @@ def main():
                     else:
                         MOVING = False
                 elif event.type == MOUSEMOTION:
-                    if MINI == True and event.buttons == (1, 0, 0):
+                    if event.buttons == (1, 0, 0):
                         MOVING = True
                         x0, y0 = GetCursorPos()
                         SetWindowPos(hwnd, win32con.HWND_DESKTOP,
                                      x0-size2//2, y0-size2//2, size2, size2,
                                      win32con.SWP_NOSIZE)
                         pygame.event.get([MOUSEMOTION, MOUSEBUTTONUP])
+                if event.type == KEYDOWN:
+                    if event.key == 13:
+                        maxi()
             if event.type == QUIT:
                 pygame.quit()
                 return
