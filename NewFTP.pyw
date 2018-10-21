@@ -33,9 +33,6 @@ class NameManager:
         name1 = name+':'+self.pas_dict.get(name,'123')+'@' if name else ''
         print (name1)
         popen('start explorer ftp://%s6.163.193.243'%name1)
-def get_grid_num(x, y):
-    print('redirecting',(x, y))
-    return((y//size)*3+x//size)
 
 def find():
     hwnd = FindWindow(None,'oh-my-ftp')
@@ -94,10 +91,7 @@ def main():
     def maxi():
         global MINI
         if MINI == True:
-##            environ['SDL_VIDEO_WINDOW_POS']='%d,%d'%(startx, starty)
-##            DIS = pygame.display.set_mode((3*size, 3*size), NOFRAME)
             mgr.page = 0
-            #it is quite strange that SetWindowPos should be added
             SetWindowPos(hwnd, win32con.HWND_DESKTOP,\
                          startx, starty, 3*size, 3*size, win32con.SWP_SHOWWINDOW)
             SetForegroundWindow(hwnd)
@@ -122,7 +116,7 @@ def main():
                         elif x == -1:
                             mini()
                         else:
-                            mgr.launch(get_grid_num(*event.pos))
+                            mgr.launch((y//size)*3+x//size)
                             mini()
                     elif event.button == 3:
                         pygame.quit()
