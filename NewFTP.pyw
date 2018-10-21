@@ -34,6 +34,25 @@ class NameManager:
         print (name1)
         popen('start explorer ftp://%s6.163.193.243'%name1)
 
+def load():
+    with open('config.yaml','r') as f:
+        usr,pas,sty=yaml.load_all(f)
+    with open('Styles/'+sty+'.yaml') as f:
+        STYLE=yaml.load(f)
+    return NameManager(usr,pas),STYLE
+
+def draw_bg(STYLE):
+    BGSurf = pygame.surface.Surface((3*size, 3*size))
+    BGSurf.fill((9, 68, 134, 10))
+    for i in range(3):
+        for j in range(3):
+            pygame.draw.rect(BGSurf,(13, 140, 235, 10),
+                             (i*size, j*size, size, size), 10)
+    BG = pygame.image.load('bg.jpg')
+    BG = pygame.transform.scale(BG,(3*size, 3*size))
+    BG.set_alpha(45)
+    BGSurf.blit(BG,(0, 0))
+    return BGSurf
 def find():
     hwnd = FindWindow(None,'oh-my-ftp')
     if hwnd:
@@ -54,19 +73,10 @@ def main():
     find()
     pygame.display.set_caption('oh-my-ftp')
     hwnd = FindWindow(None,'oh-my-ftp')
-    BGSurf = pygame.surface.Surface((3*size, 3*size))
-    BGSurf.fill((9, 68, 134, 10))
-    for i in range(3):
-        for j in range(3):
-            pygame.draw.rect(BGSurf,(13, 140, 235, 10),
-                             (i*size, j*size, size, size), 10)
-    BG = pygame.image.load('bg.jpg')
-    BG = pygame.transform.scale(BG,(3*size, 3*size))
-    BG.set_alpha(45)
-    BGSurf.blit(BG,(0, 0))        
+    mgr,STYLE = load()
+    BGSurf = draw_bg(STYLE)
     pygame.font.init()
     FontObj = pygame.font.SysFont('stliti', 24)
-    mgr = NameManager()
     def draw_text():
         DIS.blit(BGSurf,(0, 0))
         for n in range(8):
