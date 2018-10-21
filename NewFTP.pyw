@@ -105,19 +105,13 @@ def main():
         MINI = False
     while True:
         for event in pygame.event.get():
-            if event.type == MOUSEBUTTONDOWN:
-                if event.button == 1:
-                    start_pos = event.pos
-            if event.type == MOUSEBUTTONUP:
-                if event.button == 1:
-                    x0, y0 = event.pos
-                    if MINI == True :
-                        if MOVING == False:
-                            print('maximizing', event.pos)
-                            maxi()
-                        else:
-                            MOVING = False
-                    else:
+            if MINI == False:
+                if event.type == MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        start_pos = event.pos
+                elif event.type == MOUSEBUTTONUP:
+                    if event.button == 1:
+                        x0, y0 = event.pos
                         if (x0 < 3 or x0 > size*3-3 or y0 < 3 or y0 > size*3-3):
                             continue
                         x, y = direction.get_mouse_direction(
@@ -130,20 +124,38 @@ def main():
                         else:
                             mgr.launch(get_grid_num(*event.pos))
                             mini()
-                elif event.button == 3:
-                    pygame.quit()
-                    return
-                elif event.button in (5, 4):
-                    mgr.pageturn(event.button*2-9)
-                    draw_text()
-            if event.type == MOUSEMOTION:
-                if MINI == True and event.buttons == (1, 0, 0):
-                    MOVING = True
-                    x0, y0 = GetCursorPos()
-                    SetWindowPos(hwnd, win32con.HWND_DESKTOP,
-                                 x0-size2//2, y0-size2//2, size2, size2,
-                                 win32con.SWP_NOSIZE)
-                    pygame.event.get([MOUSEMOTION, MOUSEBUTTONUP])
+                    elif event.button == 3:
+                        pygame.quit()
+                        return
+                    elif event.button in (5, 4):
+                        mgr.pageturn(event.button*2-9)
+                        draw_text()
+                elif event.type == KEYDOWN:
+                    elif event.key in (280, 281):
+                        mgr.pageturn(event.key *2-561)
+                        draw_text()
+                    elif event.key == 276:
+                        mini()
+                    elif event.key == 13:
+                        maxi()
+                elif event.type == ACTIVEEVENT:
+                    if event.gain == 0 and event.state == 2:
+                        mini()
+            if MINI == True:
+                if event.type == MOUSEBUTTONDOWN and event.type == MOUSEBUTTONUP:
+                    if MOVING == False:
+                        print('maximizing', event.pos)
+                        maxi()
+                    else:
+                        MOVING = False
+                elif event.type == MOUSEMOTION:
+                    if MINI == True and event.buttons == (1, 0, 0):
+                        MOVING = True
+                        x0, y0 = GetCursorPos()
+                        SetWindowPos(hwnd, win32con.HWND_DESKTOP,
+                                     x0-size2//2, y0-size2//2, size2, size2,
+                                     win32con.SWP_NOSIZE)
+                        pygame.event.get([MOUSEMOTION, MOUSEBUTTONUP])
             if event.type == QUIT:
                 pygame.quit()
                 return
@@ -153,16 +165,6 @@ def main():
                     return
                 elif 49 <= event.key <= 57:
                     mgr.launch(event.key-49)
-                    mini()
-                elif event.key in (280, 281):
-                    mgr.pageturn(event.key *2-561)
-                    draw_text()
-                elif event.key == 276:
-                    mini()
-                elif event.key == 13:
-                    maxi()
-            elif event.type == ACTIVEEVENT:
-                if event.gain == 0 and event.state == 2:
                     mini()
 
         pygame.time.wait(20)
