@@ -4,27 +4,28 @@ from os import popen, environ, _exit
 from win32gui import FindWindow, SetWindowPos, PostMessage, GetCursorPos, SetForegroundWindow
 import direction
 import win32con
+import yaml
 
 size = 75
 size2 = 30
 startx, starty = 0, 500
 
 class NameManager:
-    usrs=('zm','cjun','xmh','zxs','zjx','ysh','zjp','cj','zzx')
-    names=('语文','数学','英语','物理','化学','地理杨','地理周','历史','钟志兴')
-    pas_dict={'zzx':'1234'}
-    page = 0
-    maxpage = len(usrs)//8
-    def get_usr(self, i):
+    def __init__(self,usr,pas_dict):
+        self.acnts=tuple(usr.items())
+        self.pas_dict=pas_dict
+        self.page = 0
+        self.maxpage = len(usrs)//8
+        self.total=len(self.acnts)
+    def get_acnt(self, i):
         num = self.page*8+i
         if not 0 <= i <= 7:
             return ''
-        return self.usrs[num] if num<len(self.usrs) else ''
+        return self.acnts[num] if num<self.total else ('','')
+    def get_usr(self,i):
+        return self.get_acnt(i)[1]
     def get_name(self, i):
-        num = self.page*8+i
-        if not 0 <= i <= 7:
-            return ''
-        return self.names[num] if num<len(self.names) else ''
+        return self.get_acnt(i)[0]
     def pagedown(self):
         self.page = min(self.maxpage, self.page+1)
     def pageup(self):
