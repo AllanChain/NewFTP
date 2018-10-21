@@ -26,9 +26,8 @@ class NameManager:
         return self.get_acnt(i)[1]
     def get_name(self, i):
         return self.get_acnt(i)[0]
-    def pageturn(self,d):
-        #d is either 1 or -1
-        self.page = max(0,min(self.maxpage, self.page+d))
+    def pageturn(self,pg):
+        self.page = max(0,min(self.maxpage, self.page+pg))
     def launch(self, num):
         name=self.get_usr(num)
         name1 = name+':'+self.pas_dict.get(name,'123')+'@' if name else ''
@@ -123,11 +122,8 @@ def main():
                             continue
                         x, y = direction.get_mouse_direction(
                             start_pos, event.pos)
-                        if y == 1:
-                            mgr.pageup()
-                            draw_text()
-                        elif y == -1:
-                            mgr.pagedown()
+                        if y == 1 or y == -1:
+                            mgr.pageturn(y)
                             draw_text()
                         elif x == -1:
                             mini()
@@ -137,11 +133,8 @@ def main():
                 elif event.button == 3:
                     pygame.quit()
                     return
-                elif event.button == 5:
-                    mgr.pagedown()
-                    draw_text()
-                elif event.button == 4:
-                    mgr.pageup()
+                elif event.button in (5, 4):
+                    mgr.pageturn(event.button*2-9)
                     draw_text()
             if event.type == MOUSEMOTION:
                 if MINI == True and event.buttons == (1, 0, 0):
@@ -161,11 +154,8 @@ def main():
                 elif 49 <= event.key <= 57:
                     mgr.launch(event.key-49)
                     mini()
-                elif event.key == 280:
-                    mgr.pageup()
-                    draw_text()
-                elif event.key == 281:
-                    mgr.pagedown()
+                elif event.key in (280, 281):
+                    mgr.pageturn(event.key *2-561)
                     draw_text()
                 elif event.key == 276:
                     mini()
