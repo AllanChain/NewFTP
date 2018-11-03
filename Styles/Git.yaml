@@ -1,7 +1,7 @@
 maximum:
         block:
                 width: 75
-                height: 65
+                height: 75
         border: 10
         rows: 3
         cols: 3 # That is 3*3 blocks per page
@@ -9,22 +9,23 @@ maximum:
                 x: 0
                 y: 500
         color:
-                background: !!python/tuple [9, 68, 134, 10]
-                border: !!python/tuple [13, 140, 235, 10]
+                background: !!python/tuple [230, 207, 116, 10]
+                border: !!python/tuple [255, 230, 129, 10]
                 # if you leave image undefined, it means no image will be displayed
         image:
-                path: Win7.jpg
-                alpha: 45
+                path: Img/Git.jpg
+                alpha: 80
 minimum:
         width: 30
         height: 30
         border: 4
         pos:
                 x: 0
-                y: 225
+                y: 425
         color:
-                background: !!python/tuple [9, 68, 134, 10]
-                border: !!python/tuple [13, 140, 235, 10]
+                background: !!python/tuple [230, 207, 116, 10]
+                border: !!python/tuple [255, 230, 129, 10]
 font:
         font: stliti
         size: 22
+        color: !!python/tuple [0, 0, 0]

@@ -99,7 +99,7 @@ def main():
         for n in range(mgr.perpage):
             i, j = n//style.maximum.rows, n%style.maximum.rows
             name = mgr.get_name(n)
-            txt = FontObj.render(name, True,(255, 255, 255))
+            txt = FontObj.render(name, True,style.font.color)
             rect = txt.get_rect()
             rect.center=((j+0.5)*style.maximum.block.width,
                          (i+0.5)*style.maximum.block.height)
