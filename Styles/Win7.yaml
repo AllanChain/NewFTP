@@ -13,7 +13,7 @@ maximum:
                 border: !!python/tuple [13, 140, 235, 10]
                 # if you leave image undefined, it means no image will be displayed
         image:
-                path: bg.jpg
+                path: Img/Win7.jpg
                 alpha: 45
 minimum:
         width: 30
@@ -28,3 +28,4 @@ minimum:
 font:
         font: stliti
         size: 22
+        color: !!python/tuple [255, 255, 255]
