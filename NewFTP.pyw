@@ -164,11 +164,12 @@ def main():
                         mini()
             elif MINI == True:
                 if event.type == MOUSEBUTTONUP:
-                    if MOVING == False:
-                        print('maximizing', event.pos)
-                        maxi()
-                    else:
-                        MOVING = False
+                    if event.button == 1:
+                        if MOVING == False :
+                            print('maximizing', event.pos)
+                            maxi()
+                        else:
+                            MOVING = False
                 elif event.type == MOUSEMOTION:
                     if event.buttons == (1, 0, 0):
                         MOVING = True
