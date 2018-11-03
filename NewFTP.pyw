@@ -32,9 +32,13 @@ class NameManager:
         self.page = max(0,min(self.maxpage, self.page+pg))
     def launch(self, num):
         name=self.get_usr(num)
-        name1 = name+':'+self.pas_dict.get(name,'123')+'@' if name else ''
-        print (name1)
-        popen('start explorer ftp://%s6.163.193.243'%name1)
+        print(num)
+        if '/' in name or '\\' in name:
+            popen('start explorer %s'%name)
+        else:
+            name1 = name+':'+self.pas_dict.get(name,'123')+'@' if name else ''
+            print (name1)
+            popen('start explorer ftp://%s6.163.193.243'%name1)
 
 def load():
     with open('config.yaml','r') as f:
@@ -143,8 +147,8 @@ def main():
                         elif (3 < x0 < style.maximum.width-3 or\
                               3 < y0 < style.maximum.height-3):
                             #to avoid misclicking or launch the shortcut while maximized
-                            mgr.launch((y//style.maximum.block.height)*style.maximum.rows+
-                                       x//style.maximum.block.width)
+                            mgr.launch((y0//style.maximum.block.height)*style.maximum.rows+
+                                       x0//style.maximum.block.width)
                             mini()
                     elif event.button in (5, 4):
                         mgr.pageturn(event.button*2-9)
