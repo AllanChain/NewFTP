@@ -7,9 +7,9 @@ import win32con
 import yaml
 from dotted_dict import DottedDict
 
-size = 75
-size2 = 30
-startx, starty = 0, 500
+##size = 75
+##size2 = 30
+##startx, starty = 0, 500
 
 class NameManager:
     def __init__(self,usr,pas_dict):
@@ -37,29 +37,39 @@ class NameManager:
 
 def load():
     with open('config.yaml','r') as f:
-        usr,pas,sty=yaml.load_all(f)
-    with open('Styles/'+sty+'.yaml') as f:
-        STYLE=yaml.load(f)
-    return NameManager(usr,pas), DottedDict(STYLE)
+        usr,pas,sty = yaml.load_all(f)
+    with open('styles/' + sty['style'] + '.yaml') as f:
+        style = yaml.load(f)
+    style = DottedDict(style)
+    style.maximum.width = style.maximum.cols*style.maximum.block.width
+    style.maximum.height = style.maximum.cols*style.maximum.block.height
+    print(usr,pas)
+    return NameManager(usr,pas),style 
 
-def draw_bg(STYLE):
-    BGSurf = pygame.surface.Surface((3*size, 3*size))
-    BGSurf.fill(STYLE.maximum.color.background)
-    for i in range(3):
-        for j in range(3):
-            pygame.draw.rect(BGSurf,(13, 140, 235, 10),
-                             (i*size, j*size, size, size), 10)
-    BG = pygame.image.load('bg.jpg')
-    BG = pygame.transform.scale(BG,(3*size, 3*size))
-    BG.set_alpha(45)
+def draw_bg(style):
+    BGSurf = pygame.surface.Surface((style.maximum.width,style.maximum.height))
+    BGSurf.fill(style.maximum.color.background)
+    for i in range(style.maximum.cols):
+        for j in range(style.maximum.rows):
+            pygame.draw.rect(BGSurf,style.maximum.color.border,
+                             (i*style.maximum.block.width,
+                              j*style.maximum.block.height,
+                              style.maximum.block.width,
+                              style.maximum.block.height),
+                             style.maximum.border)
+    BG = pygame.image.load(style.maximum.image.path)
+    BG = pygame.transform.scale(BG,(style.maximum.width,style.maximum.height))
+    BG.set_alpha(style.maximum.image.alpha)
     BGSurf.blit(BG,(0, 0))
-    return BGSurf
+    BGMSurf = pygame.surface.Surface((style.minimum.width,style.minimum.height))
+    BGMSurf.fill(style.minimum.color.background)
+    pygame.draw.rect(BGMSurf,style.minimum.color.border,(0, 0, style.minimum.width,
+                    style.minimum.height), style.minimum.border)
+    return BGSurf, BGMSurf
 def find():
     hwnd = FindWindow(None,'oh-my-ftp')
     if hwnd:
         pygame.quit()
-        SetWindowPos(hwnd, win32con.HWND_DESKTOP, startx, starty,
-                     3*size, 3*size, win32con.SWP_NOSIZE)
         PostMessage(hwnd, win32con.WM_LBUTTONDOWN, 0,(1<<16)+1)
         PostMessage(hwnd, win32con.WM_LBUTTONUP, 0,(1<<16)+1)
         _exit(0)
@@ -67,15 +77,15 @@ def find():
 def main():
     global MINI
     find()
-    environ['SDL_VIDEO_WINDOW_POS']='%d,%d'%(startx, starty)
-    DIS = pygame.display.set_mode((3*size, 3*size), NOFRAME)
+    mgr,style = load()
+    environ['SDL_VIDEO_WINDOW_POS']='%d,%d'%(style.maximum.pos.x,style.maximum.pos.y)
+    DIS = pygame.display.set_mode((style.maximum.width,style.maximum.height), NOFRAME)
     MINI = False
     MOVING = False
     find()
     pygame.display.set_caption('oh-my-ftp')
     hwnd = FindWindow(None,'oh-my-ftp')
-    mgr,STYLE = load()
-    BGSurf = draw_bg(STYLE)
+    BGSurf,BGMSurf = draw_bg(style)
     pygame.font.init()
     FontObj = pygame.font.SysFont('stliti', 24)
     def draw_text():
@@ -85,7 +95,8 @@ def main():
             name = mgr.get_name(n)
             txt = FontObj.render(name, True,(255, 255, 255))
             rect = txt.get_rect()
-            rect.center=(j*size+size/2, i*size+size/2)
+            rect.center=((j+0.5)*style.maximum.block.width,
+                         (i+0.5)*style.maximum.block.height)
             DIS.blit(txt, rect)
         pygame.display.update()
     draw_text()
@@ -93,9 +104,10 @@ def main():
         global MINI
         if MINI == False:
             SetWindowPos(hwnd, win32con.HWND_DESKTOP,\
-                         0, 5*size, size2, size2, win32con.SWP_NOACTIVATE)#win32con.SWP_NOSIZE)
-            DIS.fill((9, 68, 134, 10))
-            pygame.draw.rect(DIS,(13, 140, 235, 10),(0, 0, size2, size2), 4)
+                         style.minimum.pos.x,style.minimum.pos.y,
+                         style.minimum.width,style.minimum.height,
+                         win32con.SWP_NOACTIVATE)#win32con.SWP_NOSIZE)
+            DIS.blit(BGMSurf)
             pygame.display.update()
             pygame.event.get([MOUSEMOTION, MOUSEBUTTONUP])
         MINI = True
@@ -103,9 +115,9 @@ def main():
         global MINI
         if MINI == True:
             mgr.page = 0
-            SetWindowPos(hwnd, win32con.HWND_DESKTOP,\
-                         startx, starty, 3*size, 3*size, win32con.SWP_SHOWWINDOW)
-            SetForegroundWindow(hwnd)
+            # recreate the window may be the most efficient one
+            environ['SDL_VIDEO_WINDOW_POS']='%d,%d'%(style.maximum.pos.x,style.maximum.pos.y)
+            DIS = pygame.display.set_mode((style.maximum.width,style.maximum.height),NOFRAME)
             draw_text()
         MINI = False
     while True:
@@ -117,16 +129,17 @@ def main():
                 elif event.type == MOUSEBUTTONUP:
                     if event.button == 1:
                         x0, y0 = event.pos
-                            continue
-                        x, y = direction.get_mouse_direction(
-                            start_pos, event.pos)
+                        x, y = direction.get_mouse_direction(start_pos, event.pos)
                         if y == 1 or y == -1:
                             mgr.pageturn(y)
                             draw_text()
                         elif x == -1:
                             mini()
-                        elif (3 < x0 < size*3-3 or 3 < y0 < size*3-3):
-                            mgr.launch((y//size)*3+x//size)
+                        elif (3 < x0 < style.maximum.width-3 or\
+                              3 < y0 < style.maximum.height-3):
+                            #to avoid misclicking or launch the shortcut while maximized
+                            mgr.launch((y//style.maximum.block.height)*style.maximum.rows+
+                                       x//style.maximum.block.width)
                             mini()
                     elif event.button == 3:
                         pygame.quit()
@@ -135,7 +148,7 @@ def main():
                         mgr.pageturn(event.button*2-9)
                         draw_text()
                 elif event.type == KEYDOWN:
-                    elif event.key in (280, 281):
+                    if event.key in (280, 281):
                         mgr.pageturn(event.key *2-561)
                         draw_text()
                     elif event.key == 276:
@@ -155,7 +168,8 @@ def main():
                         MOVING = True
                         x0, y0 = GetCursorPos()
                         SetWindowPos(hwnd, win32con.HWND_DESKTOP,
-                                     x0-size2//2, y0-size2//2, size2, size2,
+                                     x0-style.minimum.width//2,
+                                     y0-style.minimum.height//2,0,0,
                                      win32con.SWP_NOSIZE)
                         pygame.event.get([MOUSEMOTION, MOUSEBUTTONUP])
                 if event.type == KEYDOWN:
