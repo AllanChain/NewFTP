@@ -5,6 +5,7 @@ from win32gui import FindWindow, SetWindowPos, PostMessage, GetCursorPos, SetFor
 import direction
 import win32con
 import yaml
+from dotted_dict import DottedDict
 
 size = 75
 size2 = 30
@@ -39,11 +40,11 @@ def load():
         usr,pas,sty=yaml.load_all(f)
     with open('Styles/'+sty+'.yaml') as f:
         STYLE=yaml.load(f)
-    return NameManager(usr,pas),STYLE
+    return NameManager(usr,pas), DottedDict(STYLE)
 
 def draw_bg(STYLE):
     BGSurf = pygame.surface.Surface((3*size, 3*size))
-    BGSurf.fill((9, 68, 134, 10))
+    BGSurf.fill(STYLE.maximum.color.background)
     for i in range(3):
         for j in range(3):
             pygame.draw.rect(BGSurf,(13, 140, 235, 10),

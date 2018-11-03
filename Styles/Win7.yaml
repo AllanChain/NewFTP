@@ -2,7 +2,8 @@ maximum:
     size:
         block: 75
         border: 10
-        grids: 3   # That is 3*3 blocks per page
+        rows: 3
+        cols: 3 # That is 3*3 blocks per page
     pos:
         x: 0
         y: 500
