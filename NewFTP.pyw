@@ -197,6 +197,6 @@ def main():
                     pygame.quit()
                     return
 
-        pygame.time.wait(20)
+        pygame.time.wait(50)
 if  __name__  == '__main__':
     main()
