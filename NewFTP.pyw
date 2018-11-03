@@ -12,16 +12,17 @@ from dotted_dict import DottedDict
 ##startx, starty = 0, 500
 
 class NameManager:
-    def __init__(self,usr,pas_dict):
+    def __init__(self,usr,pas_dict,perpage):
         self.acnts=tuple(usr.items())
         self.pas_dict=pas_dict
         self.page = 0
-        self.maxpage = len(usrs)//8
+        self.perpage = perpage
+        self.maxpage = len(usr)//perpage
         self.total=len(self.acnts)
     def get_acnt(self, i):
-        num = self.page*8+i
-        if not 0 <= i <= 7:
-            return ''
+        num = self.page*self.perpage+i
+        if not 0 <= i <= self.perpage-1:
+            return ('','')
         return self.acnts[num] if num<self.total else ('','')
     def get_usr(self,i):
         return self.get_acnt(i)[1]
@@ -41,23 +42,24 @@ def load():
     with open('styles/' + sty['style'] + '.yaml') as f:
         style = yaml.load(f)
     style = DottedDict(style)
-    style.maximum.width = style.maximum.cols*style.maximum.block.width
+    style.maximum.width = style.maximum.rows*style.maximum.block.width
     style.maximum.height = style.maximum.cols*style.maximum.block.height
-    print(usr,pas)
-    return NameManager(usr,pas),style 
+    mgr = NameManager(usr,pas,style.maximum.rows*style.maximum.cols-1)
+    #print(usr,pas)
+    return mgr,style 
 
 def draw_bg(style):
     BGSurf = pygame.surface.Surface((style.maximum.width,style.maximum.height))
     BGSurf.fill(style.maximum.color.background)
-    for i in range(style.maximum.cols):
-        for j in range(style.maximum.rows):
+    for i in range(style.maximum.rows):
+        for j in range(style.maximum.cols):
             pygame.draw.rect(BGSurf,style.maximum.color.border,
                              (i*style.maximum.block.width,
                               j*style.maximum.block.height,
                               style.maximum.block.width,
                               style.maximum.block.height),
                              style.maximum.border)
-    BG = pygame.image.load(style.maximum.image.path)
+    BG = pygame.image.load('Styles/'+style.maximum.image.path)
     BG = pygame.transform.scale(BG,(style.maximum.width,style.maximum.height))
     BG.set_alpha(style.maximum.image.alpha)
     BGSurf.blit(BG,(0, 0))
@@ -87,11 +89,11 @@ def main():
     hwnd = FindWindow(None,'oh-my-ftp')
     BGSurf,BGMSurf = draw_bg(style)
     pygame.font.init()
-    FontObj = pygame.font.SysFont('stliti', 24)
+    FontObj = pygame.font.SysFont(style.font.font, style.font.size)
     def draw_text():
         DIS.blit(BGSurf,(0, 0))
-        for n in range(8):
-            i, j = n//3, n%3
+        for n in range(mgr.perpage):
+            i, j = n//style.maximum.rows, n%style.maximum.rows
             name = mgr.get_name(n)
             txt = FontObj.render(name, True,(255, 255, 255))
             rect = txt.get_rect()
@@ -107,7 +109,7 @@ def main():
                          style.minimum.pos.x,style.minimum.pos.y,
                          style.minimum.width,style.minimum.height,
                          win32con.SWP_NOACTIVATE)#win32con.SWP_NOSIZE)
-            DIS.blit(BGMSurf)
+            DIS.blit(BGMSurf, (0,0))
             pygame.display.update()
             pygame.event.get([MOUSEMOTION, MOUSEBUTTONUP])
         MINI = True
@@ -116,7 +118,10 @@ def main():
         if MINI == True:
             mgr.page = 0
             # recreate the window may be the most efficient one
-            environ['SDL_VIDEO_WINDOW_POS']='%d,%d'%(style.maximum.pos.x,style.maximum.pos.y)
+            SetWindowPos(hwnd, win32con.HWND_DESKTOP,\
+                         style.maximum.pos.x,style.maximum.pos.y,
+                         style.maximum.width,style.maximum.height,
+                         win32con.SWP_SHOWWINDOW)
             DIS = pygame.display.set_mode((style.maximum.width,style.maximum.height),NOFRAME)
             draw_text()
         MINI = False
@@ -131,7 +136,7 @@ def main():
                         x0, y0 = event.pos
                         x, y = direction.get_mouse_direction(start_pos, event.pos)
                         if y == 1 or y == -1:
-                            mgr.pageturn(y)
+                            mgr.pageturn(-y)
                             draw_text()
                         elif x == -1:
                             mini()
@@ -141,9 +146,6 @@ def main():
                             mgr.launch((y//style.maximum.block.height)*style.maximum.rows+
                                        x//style.maximum.block.width)
                             mini()
-                    elif event.button == 3:
-                        pygame.quit()
-                        return
                     elif event.button in (5, 4):
                         mgr.pageturn(event.button*2-9)
                         draw_text()
@@ -156,8 +158,8 @@ def main():
                 elif event.type == ACTIVEEVENT:
                     if event.gain == 0 and event.state == 2:
                         mini()
-            if MINI == True:
-                if event.type == MOUSEBUTTONDOWN and event.type == MOUSEBUTTONUP:
+            elif MINI == True:
+                if event.type == MOUSEBUTTONUP:
                     if MOVING == False:
                         print('maximizing', event.pos)
                         maxi()
@@ -178,13 +180,17 @@ def main():
             if event.type == QUIT:
                 pygame.quit()
                 return
-            if event.type == KEYDOWN:
+            elif event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     pygame.quit()
                     return
                 elif 49 <= event.key <= 57:
                     mgr.launch(event.key-49)
                     mini()
+            elif event.type == MOUSEBUTTONUP:
+                if event.button == 3:
+                    pygame.quit()
+                    return
 
         pygame.time.wait(20)
 if  __name__  == '__main__':
