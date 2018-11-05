@@ -46,17 +46,17 @@ def load():
     with open('styles/' + sty['style'] + '.yaml') as f:
         style = yaml.load(f)
     style = DottedDict(style)
-    style.maximum.width = style.maximum.rows*style.maximum.block.width
-    style.maximum.height = style.maximum.cols*style.maximum.block.height
-    mgr = NameManager(usr,pas,style.maximum.rows*style.maximum.cols-1)
+    style.maximum.width = style.maximum.cols*style.maximum.block.width
+    style.maximum.height = style.maximum.rows*style.maximum.block.height
+    mgr = NameManager(usr,pas,style.maximum.cols*style.maximum.rows-1)
     #print(usr,pas)
     return mgr,style 
 
 def draw_bg(style):
     BGSurf = pygame.surface.Surface((style.maximum.width,style.maximum.height))
     BGSurf.fill(style.maximum.color.background)
-    for i in range(style.maximum.rows):
-        for j in range(style.maximum.cols):
+    for i in range(style.maximum.cols):
+        for j in range(style.maximum.rows):
             pygame.draw.rect(BGSurf,style.maximum.color.border,
                              (i*style.maximum.block.width,
                               j*style.maximum.block.height,
@@ -97,7 +97,7 @@ def main():
     def draw_text():
         DIS.blit(BGSurf,(0, 0))
         for n in range(mgr.perpage):
-            i, j = n//style.maximum.rows, n%style.maximum.rows
+            i, j = n//style.maximum.cols, n%style.maximum.cols
             name = mgr.get_name(n)
             txt = FontObj.render(name, True,style.font.color)
             rect = txt.get_rect()
@@ -147,7 +147,7 @@ def main():
                         elif (3 < x0 < style.maximum.width-3 or\
                               3 < y0 < style.maximum.height-3):
                             #to avoid misclicking or launch the shortcut while maximized
-                            mgr.launch((y0//style.maximum.block.height)*style.maximum.rows+
+                            mgr.launch((y0//style.maximum.block.height)*style.maximum.cols+
                                        x0//style.maximum.block.width)
                             mini()
                     elif event.button in (5, 4):
