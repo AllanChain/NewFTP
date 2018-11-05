@@ -3,7 +3,7 @@ maximum:
                 width: 75
                 height: 65
         border: 10
-        rows: 3
+        rows: 4
         cols: 3 # That is 3*3 blocks per page
         pos:
                 x: 0
@@ -21,7 +21,7 @@ minimum:
         border: 4
         pos:
                 x: 0
-                y: 225
+                y: 325
         color:
                 background: !!python/tuple [9, 68, 134, 10]
                 border: !!python/tuple [13, 140, 235, 10]
