@@ -3,7 +3,7 @@ maximum:
                 width: 75
                 height: 65
         border: 10
-        rows: 4
+        rows: 3
         cols: 3 # That is 3*3 blocks per page
         pos:
                 x: 0
