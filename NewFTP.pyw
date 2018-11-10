@@ -78,6 +78,7 @@ def find():
         pygame.quit()
         PostMessage(hwnd, win32con.WM_LBUTTONDOWN, 0,(1<<16)+1)
         PostMessage(hwnd, win32con.WM_LBUTTONUP, 0,(1<<16)+1)
+        SetForegroundWindow(hwnd)
         _exit(0)
         return
 def main():
@@ -126,7 +127,6 @@ def main():
                          style.maximum.pos.x,style.maximum.pos.y,
                          style.maximum.width,style.maximum.height,
                          win32con.SWP_SHOWWINDOW)
-            DIS = pygame.display.set_mode((style.maximum.width,style.maximum.height),NOFRAME)
             draw_text()
         MINI = False
     while True:
