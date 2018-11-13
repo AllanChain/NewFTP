@@ -9,8 +9,8 @@ maximum:
                 x: 0
                 y: 500
         color:
-                background: 25AA17
-                border: !!python/tuple [102, 187, 106, 10]
+                background: 1565C0
+                border: 1E88E5
                 # if you leave image undefined, it means no image will be displayed
 minimum:
         width: 30
@@ -20,8 +20,8 @@ minimum:
                 x: 0
                 y: 325
         color:
-                background: !!python/tuple [56, 142, 60, 10]
-                border: !!python/tuple [102, 187, 106, 106]
+                background: 1565C0
+                border: 1E88E5
 font:
         font: stliti
         size: 22
