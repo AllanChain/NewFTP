@@ -42,7 +42,7 @@ class NameManager:
         else:
             name1 = name+':'+self.pas_dict.get(name,'123')+'@' if name else ''
             print (name1)
-            name = 'start explorer ftp://%s6.163.193.243'%name1
+            cmd = 'start explorer ftp://%s6.163.193.243'%name1
         popen(cmd)
 def C(color):
     '''Color converting'''
