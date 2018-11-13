@@ -132,6 +132,7 @@ def main():
     def mini():
         global MINI
         if MINI == False:
+            MINI = True
             SetWindowPos(hwnd, win32con.HWND_DESKTOP,\
                          style.minimum.pos.x,style.minimum.pos.y,
                          style.minimum.width,style.minimum.height,
@@ -139,10 +140,10 @@ def main():
             DIS.blit(BGMSurf, (0,0))
             pygame.display.update()
             pygame.event.get([MOUSEMOTION, MOUSEBUTTONUP])
-        MINI = True
     def maxi():
         global MINI
         if MINI == True:
+            MINI = False
             mgr.page = 0
             # recreate the window may be the most efficient one
             SetWindowPos(hwnd, win32con.HWND_DESKTOP,\
@@ -150,7 +151,6 @@ def main():
                          style.maximum.width,style.maximum.height,
                          win32con.SWP_SHOWWINDOW)
             draw_text()
-        MINI = False
     while True:
         for event in pygame.event.get():
             if MINI == False:
