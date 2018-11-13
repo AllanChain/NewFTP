@@ -33,13 +33,27 @@ class NameManager:
     def launch(self, num):
         name=self.get_usr(num)
         print(num)
-        if '/' in name or '\\' in name:
-            popen('start explorer %s'%name)
+        if name.startswith('$'):
+            cmd = name[1:]
+        elif name.endswith('/') or name.endswith('\\'):
+            cmd = 'start explorer %s'%name
+        elif '/' in name or '\\' in name:
+            cmd = 'start %s'%name
         else:
             name1 = name+':'+self.pas_dict.get(name,'123')+'@' if name else ''
             print (name1)
-            popen('start explorer ftp://%s6.163.193.243'%name1)
-
+            name = 'start explorer ftp://%s6.163.193.243'%name1
+        popen(cmd)
+def C(color):
+    '''Color converting'''
+    if isinstance(color, tuple):
+        return color
+    if isinstance(color, str):
+        if color.startswith('#'):
+            color = color[1:]
+        if len(color) == 6:
+            n = int(color, base=16)
+            return (n>>16) % 256, (n>>8) % 256, n % 256
 def load():
     with open('config.yaml','r') as f:
         usr,pas,sty = yaml.load_all(f)
@@ -54,22 +68,23 @@ def load():
 
 def draw_bg(style):
     BGSurf = pygame.surface.Surface((style.maximum.width,style.maximum.height))
-    BGSurf.fill(style.maximum.color.background)
+    BGSurf.fill(C(style.maximum.color.background))
     for i in range(style.maximum.cols):
         for j in range(style.maximum.rows):
-            pygame.draw.rect(BGSurf,style.maximum.color.border,
+            pygame.draw.rect(BGSurf, C(style.maximum.color.border),
                              (i*style.maximum.block.width,
                               j*style.maximum.block.height,
                               style.maximum.block.width,
                               style.maximum.block.height),
                              style.maximum.border)
-    BG = pygame.image.load('Styles/'+style.maximum.image.path)
-    BG = pygame.transform.scale(BG,(style.maximum.width,style.maximum.height))
-    BG.set_alpha(style.maximum.image.alpha)
-    BGSurf.blit(BG,(0, 0))
+    if 'image' in style.maximum:
+        BG = pygame.image.load('Styles/'+style.maximum.image.path)
+        BG = pygame.transform.scale(BG,(style.maximum.width,style.maximum.height))
+        BG.set_alpha(style.maximum.image.alpha)
+        BGSurf.blit(BG,(0, 0))
     BGMSurf = pygame.surface.Surface((style.minimum.width,style.minimum.height))
-    BGMSurf.fill(style.minimum.color.background)
-    pygame.draw.rect(BGMSurf,style.minimum.color.border,(0, 0, style.minimum.width,
+    BGMSurf.fill(C(style.minimum.color.background))
+    pygame.draw.rect(BGMSurf,C(style.minimum.color.border),(0, 0, style.minimum.width,
                     style.minimum.height), style.minimum.border)
     return BGSurf, BGMSurf
 def find():
@@ -100,7 +115,7 @@ def main():
         for n in range(mgr.perpage):
             i, j = n//style.maximum.cols, n%style.maximum.cols
             name = mgr.get_name(n)
-            txt = FontObj.render(name, True,style.font.color)
+            txt = FontObj.render(name, True, C(style.font.color))
             rect = txt.get_rect()
             rect.center=((j+0.5)*style.maximum.block.width,
                          (i+0.5)*style.maximum.block.height)
@@ -199,4 +214,10 @@ def main():
 
         pygame.time.wait(50)
 if  __name__  == '__main__':
-    main()
+    try:
+        main()
+    except Exception as e:
+        with open('log.txt','w') as f:
+            f.write(str(e))
+        print(e.__dict__)
+        raise e
