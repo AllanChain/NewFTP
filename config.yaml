@@ -8,10 +8,10 @@
 地理周: zjp
 陈忠伟: czw
 钟志兴: zzx
-英早: D:\英语早读
+EL: $python -m pygame.examples.eventlist
 ...
 ---
 zzx: "1234"
 ...
 ---
-style: Win7
+style: MaterialGreen
