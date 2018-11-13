@@ -111,15 +111,22 @@ def main():
     pygame.font.init()
     FontObj = pygame.font.SysFont(style.font.font, style.font.size)
     def draw_text():
-        DIS.blit(BGSurf,(0, 0))
-        for n in range(mgr.perpage):
-            i, j = n//style.maximum.cols, n%style.maximum.cols
-            name = mgr.get_name(n)
-            txt = FontObj.render(name, True, C(style.font.color))
+        if MINI == True:
+            DIS.blit(BGMSurf, (0,0))
+            txt = FontObj.render(str(mgr.page), True, C(style.font.color))
             rect = txt.get_rect()
-            rect.center=((j+0.5)*style.maximum.block.width,
-                         (i+0.5)*style.maximum.block.height)
+            rect.center=(style.minimum.width//2,style.minimum.height//2)
             DIS.blit(txt, rect)
+        else:
+            DIS.blit(BGSurf,(0, 0))
+            for n in range(mgr.perpage):
+                i, j = n//style.maximum.cols, n%style.maximum.cols
+                name = mgr.get_name(n)
+                txt = FontObj.render(name, True, C(style.font.color))
+                rect = txt.get_rect()
+                rect.center=((j+0.5)*style.maximum.block.width,
+                             (i+0.5)*style.maximum.block.height)
+                DIS.blit(txt, rect)
         pygame.display.update()
     draw_text()
     def mini():
@@ -169,10 +176,7 @@ def main():
                         mgr.pageturn(event.button*2-9)
                         draw_text()
                 elif event.type == KEYDOWN:
-                    if event.key in (280, 281):
-                        mgr.pageturn(event.key *2-561)
-                        draw_text()
-                    elif event.key == 276:
+                    if event.key == 276:
                         mini()
                 elif event.type == ACTIVEEVENT:
                     if event.gain == 0 and event.state == 2:
@@ -207,6 +211,9 @@ def main():
                 elif 49 <= event.key <= 57:
                     mgr.launch(event.key-49)
                     mini()
+                elif event.key in (280, 281):
+                    mgr.pageturn(event.key *2-561)
+                    draw_text()
             elif event.type == MOUSEBUTTONUP:
                 if event.button == 3:
                     pygame.quit()
