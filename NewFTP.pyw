@@ -39,7 +39,7 @@ class NameManager:
             cmd = 'start explorer "%s"'%name
         elif '/' in name or '\\' in name:
             cmd = '"%s"'%name
-        else:
+        elif name.isascii():
             name1 = name+':'+self.pas_dict.get(name,'123')+'@' if name else ''
             print (name1)
             cmd = 'start explorer ftp://%s6.163.193.243'%name1
