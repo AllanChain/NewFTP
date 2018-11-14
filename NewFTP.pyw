@@ -36,9 +36,9 @@ class NameManager:
         if name.startswith('$'):
             cmd = name[1:]
         elif name.endswith('/') or name.endswith('\\'):
-            cmd = 'start explorer %s'%name
+            cmd = 'start explorer "%s"'%name
         elif '/' in name or '\\' in name:
-            cmd = 'start %s'%name
+            cmd = '"%s"'%name
         else:
             name1 = name+':'+self.pas_dict.get(name,'123')+'@' if name else ''
             print (name1)
