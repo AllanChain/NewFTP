@@ -1,3 +1,4 @@
+from finder import find
 import pygame
 from pygame.locals import *
 from os import popen, environ, _exit
@@ -87,15 +88,7 @@ def draw_bg(style):
     pygame.draw.rect(BGMSurf,C(style.minimum.color.border),(0, 0, style.minimum.width,
                     style.minimum.height), style.minimum.border)
     return BGSurf, BGMSurf
-def find():
-    hwnd = FindWindow(None,'oh-my-ftp')
-    if hwnd:
-        pygame.quit()
-        PostMessage(hwnd, win32con.WM_LBUTTONDOWN, 0,(1<<16)+1)
-        PostMessage(hwnd, win32con.WM_LBUTTONUP, 0,(1<<16)+1)
-        SetForegroundWindow(hwnd)
-        _exit(0)
-        return
+
 def main():
     global MINI
     find()
