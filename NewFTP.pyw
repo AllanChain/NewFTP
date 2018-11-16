@@ -171,9 +171,9 @@ def main():
                 elif event.type == KEYDOWN:
                     if event.key == 276:
                         mini()
-                elif event.type == ACTIVEEVENT:
-                    if event.gain == 0 and event.state == 2:
-                        mini()
+##                elif event.type == ACTIVEEVENT:
+##                    if event.gain == 0 and event.state == 2:
+##                        mini()
             elif MINI == True:
                 if event.type == MOUSEBUTTONUP:
                     if event.button == 1:
