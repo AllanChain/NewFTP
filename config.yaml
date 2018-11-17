@@ -1,16 +1,16 @@
 ---
-ÓïÎÄ: zm
-ÊýÑ§: cjun
-Ó¢Óï: xmh
-ÎïÀí: zxs
-»¯Ñ§: zjx
-µØÀíÑî: ysh
-µØÀíÖÜ: zjp
-³ÂÖÒÎ°: czw
-ÖÓÖ¾ÐË: zzx
+è¯­æ–‡: zm
+æ•°å­¦: cjun
+è‹±è¯­: xmh
+ç‰©ç†: zxs
+åŒ–å­¦: zjx
+åœ°ç†æ¨: ysh
+åœ°ç†å‘¨: zjp
+é™ˆå¿ ä¼Ÿ: czw
+é’Ÿå¿—å…´: zzx
 EL: $python -m pygame.examples.eventlist
-DIR: D:\Ó¢ÓïÔç¶Á\Ñ¡ÐÞ8\1 ¿Î±¾Â¼Òô\
-FILE: D:\Ó¢ÓïÔç¶Á\Ñ¡ÐÞ8\1 ¿Î±¾Â¼Òô\Reading.mp3
+DIR: D:\è‹±è¯­æ—©è¯»\é€‰ä¿®8 è¯¾æœ¬å½•éŸ³
+FILE: D:\è‹±è¯­æ—©è¯»\é€‰ä¿®8 è¯¾æœ¬å½•éŸ³\Reading.mp3
 ...
 ---
 zzx: "1234"
