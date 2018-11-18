@@ -66,9 +66,9 @@ def C(color):
             n = int(color, base=16)
             return (n>>16) % 256, (n>>8) % 256, n % 256
 def load():
-    with open('config.yaml','r') as f:
+    with open('config.yaml','r',encoding='utf-8') as f:
         usr,pas,sty = yaml.load_all(f)
-    with open('styles/' + sty['style'] + '.yaml') as f:
+    with open('styles/' + sty['style'] + '.yaml',encoding='utf-8') as f:
         style = yaml.load(f)
     style = DottedDict(style)
     #Here store some attributes to access them conveniently
@@ -112,6 +112,8 @@ def main():
     pygame.display.set_caption('oh-my-ftp')
     hwnd = FindWindow(None,'oh-my-ftp')
     BGSurf,BGMSurf = draw_bg(style)
+    mini_clock = pygame.time.Clock()
+    mini_clock.tick()
     pygame.font.init()
     FontObj = pygame.font.SysFont(style.font.font, style.font.size)
     def draw_text():
@@ -148,6 +150,7 @@ def main():
         global MINI
         if MINI == True:
             MINI = False
+            mini_clock.tick()
             mgr.page = 0
             # recreate the window may be the most efficient one
             SetWindowPos(hwnd, win32con.HWND_DESKTOP,\
@@ -182,9 +185,12 @@ def main():
                 elif event.type == KEYDOWN:
                     if event.key == 276:
                         mini()
-##                elif event.type == ACTIVEEVENT:
-##                    if event.gain == 0 and event.state == 2:
-##                        mini()
+                elif event.type == ACTIVEEVENT:
+                    if event.gain == 0 and event.state == 2:
+                        time = mini_clock.tick()
+                        print(time)
+                        if time > 700:
+                            mini()
             elif MINI == True:
                 if event.type == MOUSEBUTTONUP:
                     if event.button == 1:
@@ -228,7 +234,9 @@ if  __name__  == '__main__':
     try:
         main()
     except Exception as e:
-        with open('log.txt','w') as f:
-            f.write(str(e))
-        print(e.__dict__)
-        raise e
+        from time import ctime
+        from traceback import print_exc
+        with open('log.txt','a') as f:
+            f.write('\n'+'-'*20+ctime()+'-'*20+'\n')
+            print_exc(file=f)
+        _exit(1)
