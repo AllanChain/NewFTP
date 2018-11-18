@@ -56,9 +56,9 @@ def C(color):
             n = int(color, base=16)
             return (n>>16) % 256, (n>>8) % 256, n % 256
 def load():
-    with open('config.yaml','r') as f:
+    with open('config.yaml','r',encoding='utf-8') as f:
         usr,pas,sty = yaml.load_all(f)
-    with open('styles/' + sty['style'] + '.yaml') as f:
+    with open('styles/' + sty['style'] + '.yaml',encoding='utf-8') as f:
         style = yaml.load(f)
     style = DottedDict(style)
     style.maximum.width = style.maximum.cols*style.maximum.block.width
