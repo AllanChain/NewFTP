@@ -60,8 +60,12 @@ def load():
     with open('config.yaml','r',encoding='utf-8') as f:
         usr,pas,sty = yaml.load_all(f)
     with open('styles/' + sty['style'] + '.yaml',encoding='utf-8') as f:
-        style = yaml.load(f)
-    style = Box(style)
+        new_style = yaml.load(f)
+    with open('styles/Win7.yaml',encoding='utf-8') as f:
+        defaut_style = yaml.load(f)
+    style = Box(defaut_style)
+    new_style = Box(new_style)
+    style.update(new_style)
     style.maximum.width = style.maximum.cols*style.maximum.block.width
     style.maximum.height = style.maximum.rows*style.maximum.block.height
     mgr = NameManager(usr,pas,style.maximum.cols*style.maximum.rows-1)
