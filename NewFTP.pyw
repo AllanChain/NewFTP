@@ -8,6 +8,7 @@ import win32con
 import yaml
 from dotted_dict import DottedDict
 
+
 ##size = 75
 ##size2 = 30
 ##startx, starty = 0, 500
@@ -217,7 +218,9 @@ if  __name__  == '__main__':
     try:
         main()
     except Exception as e:
-        with open('log.txt','w') as f:
-            f.write(str(e))
-        print(e.__dict__)
-        raise e
+        from time import ctime
+        from traceback import print_exc
+        with open('log.txt','a') as f:
+            f.write('\n'+'-'*20+ctime()+'-'*20+'\n')
+            print_exc(file=f)
+        _exit(1)
