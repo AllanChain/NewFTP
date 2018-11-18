@@ -77,13 +77,13 @@ def draw_bg(style):
     BGSurf.fill(C(style.maximum.color.background))
     for i in range(style.maximum.cols):
         for j in range(style.maximum.rows):
-            pygame.draw.rect(BGSurf, C(style.maximum.color.border),
+             pygame.draw.rect(BGSurf, C(style.maximum.color.border),
                              (i*style.maximum.block.width,
                               j*style.maximum.block.height,
                               style.maximum.block.width,
                               style.maximum.block.height),
                              style.maximum.border)
-    if 'image' in style.maximum:
+    if not style.maximum.image is None:
         BG = pygame.image.load('Styles/'+style.maximum.image.path)
         BG = pygame.transform.scale(BG,(style.maximum.width,style.maximum.height))
         BG.set_alpha(style.maximum.image.alpha)
