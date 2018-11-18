@@ -6,7 +6,7 @@ from win32gui import FindWindow, SetWindowPos, PostMessage, GetCursorPos, SetFor
 import direction
 import win32con
 import yaml
-from dotted_dict import DottedDict
+from box import Box
 
 
 ##size = 75
@@ -61,7 +61,7 @@ def load():
         usr,pas,sty = yaml.load_all(f)
     with open('styles/' + sty['style'] + '.yaml',encoding='utf-8') as f:
         style = yaml.load(f)
-    style = DottedDict(style)
+    style = Box(style)
     style.maximum.width = style.maximum.cols*style.maximum.block.width
     style.maximum.height = style.maximum.rows*style.maximum.block.height
     mgr = NameManager(usr,pas,style.maximum.cols*style.maximum.rows-1)
