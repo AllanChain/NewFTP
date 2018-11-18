@@ -102,6 +102,8 @@ def main():
     pygame.display.set_caption('oh-my-ftp')
     hwnd = FindWindow(None,'oh-my-ftp')
     BGSurf,BGMSurf = draw_bg(style)
+    mini_clock = pygame.time.Clock()
+    mini_clock.tick()
     pygame.font.init()
     FontObj = pygame.font.SysFont(style.font.font, style.font.size)
     def draw_text():
@@ -138,6 +140,7 @@ def main():
         global MINI
         if MINI == True:
             MINI = False
+            mini_clock.tick()
             mgr.page = 0
             # recreate the window may be the most efficient one
             SetWindowPos(hwnd, win32con.HWND_DESKTOP,\
@@ -172,9 +175,12 @@ def main():
                 elif event.type == KEYDOWN:
                     if event.key == 276:
                         mini()
-##                elif event.type == ACTIVEEVENT:
-##                    if event.gain == 0 and event.state == 2:
-##                        mini()
+                elif event.type == ACTIVEEVENT:
+                    if event.gain == 0 and event.state == 2:
+                        time = mini_clock.tick()
+                        print(time)
+                        if time > 700:
+                            mini()
             elif MINI == True:
                 if event.type == MOUSEBUTTONUP:
                     if event.button == 1:
