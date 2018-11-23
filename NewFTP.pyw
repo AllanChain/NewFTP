@@ -6,7 +6,7 @@ from win32gui import FindWindow, SetWindowPos, PostMessage, GetCursorPos, SetFor
 import direction
 import win32con
 import yaml
-from dotted_dict import DottedDict
+from box import SBox as Box
 
 
 class NameManager:
@@ -69,9 +69,16 @@ def load():
     with open('config.yaml','r',encoding='utf-8') as f:
         usr,pas,sty = yaml.load_all(f)
     with open('styles/' + sty['style'] + '.yaml',encoding='utf-8') as f:
-        style = yaml.load(f)
-    style = DottedDict(style)
     #Here store some attributes to access them conveniently
+        new_style = Box(yaml.load(f))
+    while 'parent' in sty:
+        with open('styles/%s.yaml'%sty['parent'],encoding='utf-8') as f:
+            older_style = Box(yaml.load(f))
+            new_style = older_style.update(new_style)
+    with open('Styles/Win7.yaml', encoding='utf-8') as f:
+        # Using Win7 as ultimate parent
+        style = Box(yaml.load(f))
+        style.update(new_style)
     style.maximum.width = style.maximum.cols*style.maximum.block.width
     style.maximum.height = style.maximum.rows*style.maximum.block.height
     mgr = NameManager(usr,pas,style.maximum.cols*style.maximum.rows-1)
@@ -83,13 +90,13 @@ def draw_bg(style):
     BGSurf.fill(C(style.maximum.color.background))
     for i in range(style.maximum.cols):
         for j in range(style.maximum.rows):
-            pygame.draw.rect(BGSurf, C(style.maximum.color.border),
+             pygame.draw.rect(BGSurf, C(style.maximum.color.border),
                              (i*style.maximum.block.width,
                               j*style.maximum.block.height,
                               style.maximum.block.width,
                               style.maximum.block.height),
                              style.maximum.border)
-    if 'image' in style.maximum:
+    if not style.maximum.image is None:
         BG = pygame.image.load('Styles/'+style.maximum.image.path)
         BG = pygame.transform.scale(BG,(style.maximum.width,style.maximum.height))
         BG.set_alpha(style.maximum.image.alpha)
@@ -239,4 +246,5 @@ if  __name__  == '__main__':
         with open('log.txt','a') as f:
             f.write('\n'+'-'*20+ctime()+'-'*20+'\n')
             print_exc(file=f)
+        print_exc()
         _exit(1)

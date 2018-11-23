@@ -2,27 +2,14 @@ maximum:
         block:
                 width: 75
                 height: 65
-        border: 10
-        rows: 3
-        cols: 3 # That is 3*3 blocks per page
-        pos:
-                x: 0
-                y: 500
         color:
                 background: 1565C0
                 border: 1E88E5
-                # if you leave image undefined, it means no image will be displayed
+        image:
 minimum:
-        width: 30
-        height: 30
-        border: 4
-        pos:
-                x: 0
-                y: 325
         color:
                 background: 1565C0
                 border: 1E88E5
 font:
-        font: stliti
-        size: 22
-        color: "FFFFFF"
+        color: FFFFFF
+parent: Win7
