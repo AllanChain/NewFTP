@@ -236,4 +236,5 @@ if  __name__  == '__main__':
         with open('log.txt','a') as f:
             f.write('\n'+'-'*20+ctime()+'-'*20+'\n')
             print_exc(file=f)
+        print_exc()
         _exit(1)
