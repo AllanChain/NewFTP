@@ -6,7 +6,7 @@ from win32gui import FindWindow, SetWindowPos, PostMessage, GetCursorPos, SetFor
 import direction
 import win32con
 import yaml
-from box import Box
+from box import SBox as Box
 
 
 ##size = 75
@@ -66,6 +66,7 @@ def load():
             older_style = Box(yaml.load(f))
             new_style = older_style.update(new_style)
     with open('Styles/Win7.yaml', encoding='utf-8') as f:
+        # Using Win7 as ultimate parent
         style = Box(yaml.load(f))
         style.update(new_style)
     style.maximum.width = style.maximum.cols*style.maximum.block.width
