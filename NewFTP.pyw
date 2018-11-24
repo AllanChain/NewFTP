@@ -3,6 +3,7 @@ import pygame
 from pygame.locals import *
 from os import popen, environ, _exit
 from win32gui import FindWindow, SetWindowPos, PostMessage, GetCursorPos, SetForegroundWindow
+from win32api import MessageBox
 import direction
 import win32con
 import yaml
@@ -59,16 +60,24 @@ def C(color):
 def load():
     with open('config.yaml','r',encoding='utf-8') as f:
         usr,pas,sty = yaml.load_all(f)
-    with open('styles/' + sty['style'] + '.yaml',encoding='utf-8') as f:
-        new_style = Box(yaml.load(f))
-    while 'parent' in sty:
-        with open('styles/%s.yaml'%sty['parent'],encoding='utf-8') as f:
-            older_style = Box(yaml.load(f))
-            new_style = older_style.update(new_style)
-    with open('Styles/Win7.yaml', encoding='utf-8') as f:
-        # Using Win7 as ultimate parent
-        style = Box(yaml.load(f))
-        style.update(new_style)
+    try:
+        with open('styles/' + sty['style'] + '.yaml',encoding='utf-8') as f:
+            new_style = Box(yaml.load(f))
+        parents = [sty['style']]
+        while 'parent' in sty and not sty['parent'] in parents:
+            parents.append(sty['parent'])
+            with open('styles/%s.yaml'%sty['parent'],encoding='utf-8') as f:
+                older_style = Box(yaml.load(f))
+                new_style = older_style.update(new_style)
+        if not 'Win7' in parents:
+            with open('Styles/Win7.yaml', encoding='utf-8') as f:
+                # Using Win7 as ultimate parent
+                style = Box(yaml.load(f))
+                style.update(new_style)
+    except FileNotFoundError:
+        MessageBox(win32con.NULL, "样式文件不可用！将使用默认样式","Warning", win32con.MB_ICONEXCLAMATION)
+        with open('Styles/Win7.yaml', encoding='utf-8') as f:
+            style = Box(yaml.load(f))
     style.maximum.width = style.maximum.cols*style.maximum.block.width
     style.maximum.height = style.maximum.rows*style.maximum.block.height
     mgr = NameManager(usr,pas,style.maximum.cols*style.maximum.rows-1)
@@ -97,10 +106,24 @@ def draw_bg(style):
                     style.minimum.height), style.minimum.border)
     return BGSurf, BGMSurf
 
+def log_and_exit(message = None):
+    from time import ctime
+    from traceback import print_exc
+    if not message is None:
+        MessageBox(win32con.NULL, message, "Warning", win32con.MB_ICONEXCLAMATION)
+    with open('log.txt','a') as f:
+        f.write('\n'+'-'*20+ctime()+'-'*20+'\n')
+        print_exc(file=f)
+    print_exc()
+    _exit(1)
+
 def main():
     global MINI
     find()
-    mgr,style = load()
+    try:
+        mgr,style = load()
+    except Exception:
+        log_and_exit("配置文件加载失败！")
     environ['SDL_VIDEO_WINDOW_POS']='%d,%d'%(style.maximum.pos.x,style.maximum.pos.y)
     DIS = pygame.display.set_mode((style.maximum.width,style.maximum.height), NOFRAME)
     MINI = False
@@ -231,10 +254,4 @@ if  __name__  == '__main__':
     try:
         main()
     except Exception as e:
-        from time import ctime
-        from traceback import print_exc
-        with open('log.txt','a') as f:
-            f.write('\n'+'-'*20+ctime()+'-'*20+'\n')
-            print_exc(file=f)
-        print_exc()
-        _exit(1)
+        log_and_exit()
