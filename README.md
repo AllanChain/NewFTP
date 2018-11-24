@@ -15,7 +15,8 @@ Feel free to edit its looking.
 - press F3 to start (depend on the hotkey you set)
 - press the number corresponding to the block to login
 - PgUp and PgDown to turn the pages
-- press F3 again to maximize or show window
+- press F3 again to gain focus or show window
+- Enter to maximize
 - left arrow to minimize (have not done yet)
 - press Esc, namely Back to quit
 #### Keyboard and mouse
