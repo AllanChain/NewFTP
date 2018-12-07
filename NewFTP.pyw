@@ -44,7 +44,7 @@ class NameManager:
             #Open file with default application
             #Ex. D:\Desctop\1.txt
             cmd = '"%s"'%name
-        elif name.isalpha():
+        elif name.isalpha() or name == '':
             #Ensure tha acnt is valid
             name1 = name+':'+self.pas_dict.get(name,'123')+'@' if name else ''
             #If name is '', no :@ needed
