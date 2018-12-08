@@ -10,10 +10,6 @@ import yaml
 from box import SBox as Box
 
 
-##size = 75
-##size2 = 30
-##startx, starty = 0, 500
-
 class NameManager:
     def __init__(self,usr,pas_dict,perpage):
         self.acnts=tuple(usr.items())
@@ -37,13 +33,23 @@ class NameManager:
         name=self.get_usr(num)
         print(num)
         if name.startswith('$'):
+            #Out command
+            #Ex. $python -m some_module
             cmd = name[1:]
         elif name.endswith('/') or name.endswith('\\'):
+            #Directory, open with explorer.exe
+            #Ex. D:\Desctop\mess\
+            #Ex. ~/PythonPro/
             cmd = 'start explorer "%s"'%name
         elif '/' in name or '\\' in name:
+            #Open file with default application
+            #Ex. D:\Desctop\1.txt
             cmd = '"%s"'%name
-        elif name.isascii():
+        elif name.isalpha() or name == '':
+            #Ensure tha acnt is valid
             name1 = name+':'+self.pas_dict.get(name,'123')+'@' if name else ''
+            #If name is '', no :@ needed
+            #here get(name,'123') means default password is '123'
             print (name1)
             cmd = 'start explorer ftp://%s6.163.193.243'%name1
         popen(cmd)
@@ -51,6 +57,9 @@ def C(color):
     '''Color converting'''
     if isinstance(color, tuple):
         return color
+    if isinstance(color, int):
+        #In case that color is 580646 stuff
+        color = str(color)
     if isinstance(color, str):
         if color.startswith('#'):
             color = color[1:]
@@ -62,6 +71,7 @@ def load():
         usr,pas,sty = yaml.load_all(f)
     try:
         with open('styles/' + sty['style'] + '.yaml',encoding='utf-8') as f:
+    #Here store some attributes to access them conveniently
             new_style = Box(yaml.load(f))
         parents = [sty['style']]
         while 'parent' in sty and not sty['parent'] in parents:
