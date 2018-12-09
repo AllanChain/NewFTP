@@ -59,7 +59,7 @@ All the examples here are included in the default `config.yaml`.
 - Open local file with it
 > Replace the user name with file name you want, not ending with a slash or a back slash.
 - A teacher with an abnormal combinations
-> Edit the second chunk of `config.yaml`. Note combinations made upvwith pure digits shoud be wrapped with quotes.
+> Edit the second chunk of `config.yaml`. Note combinations made up with pure digits shoud be wrapped with quotes.
 
 ### Why minimized floating window
 As you know, python is a language for the 21st century,
