@@ -2,7 +2,8 @@ from finder import find
 import pygame
 from pygame.locals import *
 from os import popen, environ, _exit
-from win32gui import FindWindow, SetWindowPos, PostMessage, GetCursorPos, SetForegroundWindow
+from win32gui import FindWindow, SetWindowPos, PostMessage, GetCursorPos,\
+     SetForegroundWindow, ShowWindow
 from win32api import MessageBox
 import direction
 import win32con
@@ -254,6 +255,8 @@ def main():
                 elif event.key in (280, 281):
                     mgr.pageturn(event.key *2-561)
                     draw_text()
+                elif event.key == K_F4 and event.mod != 0:
+                    ShowWindow(hwnd, win32con.SW_HIDE)
             elif event.type == MOUSEBUTTONUP:
                 if event.button == 3:
                     pygame.quit()
