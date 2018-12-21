@@ -38,10 +38,11 @@ def get_local_path(ftp_path,file):
     for k, v in rules.items():
         result=match(k,s_path)
         if not result is None:
-            r=result.groups()
-            match_path=parse_CH(r[-1]) if len(r)>0 else ''
-            print(match_path)
-            local_path+=v+'\\'+match_path
+            try:
+                match_path=parse_CH(result.group(1))
+                local_path+=v+'\\'+match_path
+            except Exception:
+                local_path+=v
     local_path=local_path.replace('/','\\')
     print(local_path,type(local_path))
     makedirs(local_path,exist_ok=True)
@@ -49,14 +50,15 @@ def get_local_path(ftp_path,file):
 
 def compare_mtime(file,dest):
     ftp_file=stat(file)
-    notify(str(ftp_file.st_size))
+    notify(str(ftp_file.st_size)+'\n'+str(ftp_file.st_file_attributes))
     if isfile(dest):
         local_file=stat(dest)
         print(ftp_file,local_file)
         if ftp_file.st_mtime == local_file.st_mtime:
             popen('"%s"'%dest)
             _exit(0)
-            
+        if ftp_file.st_mtime >= local_file.st_mtime:
+            popen('DEL "%s"'%dest)
 def parse_CH(s):
     l=len(s)
     i=0
