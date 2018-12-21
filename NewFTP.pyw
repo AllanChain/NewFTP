@@ -217,6 +217,7 @@ def main():
                     if event.key == 276:
                         mini()
                 elif event.type == ACTIVEEVENT:
+                    # lose focus
                     if event.gain == 0 and event.state == 2:
                         time = mini_clock.tick()
                         print(time)
