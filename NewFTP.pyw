@@ -13,7 +13,7 @@ from box import SBox as Box
 class NameManager:
     def __init__(self,usr,pas_dict,perpage):
         self.acnts=tuple(usr.items())
-        self.pas_dict=pas_dict
+        self.pas_dict = {k:str(v) for k,v in pas_dict.items()}
         self.page = 0
         self.perpage = perpage
         self.maxpage = len(usr)//perpage
