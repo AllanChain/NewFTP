@@ -14,7 +14,7 @@ class FileTracker():
         self.current_size+=len(buff)
         ratio=self.current_size/self.filesize
         percentage=str(int(ratio*100))+'%'
-        bar='#'*int(ratio*40)
+        bar='#'*int(ratio*40)+'_'*int(40-ratio*40)+'|'
         size=format_size(self.current_size)
         stdout.write(' |'.join((percentage,size,bar))+'\r')
         stdout.flush()
@@ -30,7 +30,12 @@ def init(host,port,user,password):
 def download(directory,filename,dest):
     ftp.cwd(directory)
     ftp_mtime=compare_mtime(filename,dest)
-    local_file=FileTracker(dest,ftp.size(filename))
+    ftp_filesize=ftp.size(filename)
+    local_file=FileTracker(dest,ftp_filesize)
+    print('File to download:',directory+'/'+filename)
+    print('Remote file size:',ftp_filesize)
+    print('Remote file modify time:',ftp_mtime)
+    print('Local file name:',dest)
     ftp.retrbinary('RETR %s'%filename,local_file.write)
     del local_file
     utime(dest,(ftp_mtime,ftp_mtime))
