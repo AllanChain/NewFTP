@@ -10,7 +10,8 @@ class FileTracker():
         self.file=open(filename,'wb')
         self.filesize=filesize
         self.current_size=0
-        self.pbar=tqdm(total=filesize,unit='B',unit_scale=True,ncols=60) 
+        self.pbar=tqdm(total=filesize,unit='B',unit_scale=True,ncols=60,
+                       bar_format='{l_bar}{n_fmt}|{rate_fmt}{bar}{remaining}')
     def write(self,buff):
 ##        self.current_size+=len(buff)
 ##        ratio=self.current_size/self.filesize
@@ -70,7 +71,6 @@ def download(directory,filename,dest):
     else:
         cmd='python FTPDownloader.py %s %s %s %s %s %d %d'\
              %(USER,PASSWORD,directory,filename,dest,ftp_mtime,ftp_filesize)
-        print(cmd)
         system(cmd)
 def format_size(size):
     for i in ('B','K','M','G'):
@@ -89,7 +89,7 @@ if __name__ == '__main__':
 
     user,password,directory,filename,dest,ftp_mtime,ftp_filesize=argv[1:8]
     PRINTING=True
-    system('mode 90,30')
+    system('mode 100,10')
     system('color f2')
     system('title A simple downloader')
     print('This is a simple FTP downloader')
