@@ -11,7 +11,7 @@ class FileTracker():
         self.filesize=filesize
         self.current_size=0
         self.pbar=tqdm(total=filesize,unit='B',unit_scale=True,ncols=60,
-                       bar_format='{l_bar}{n_fmt}|{rate_fmt}{bar}{remaining}')
+                       bar_format='{l_bar}{n_fmt}/{total_fmt}|{rate_fmt}{bar}{remaining}')
     def write(self,buff):
 ##        self.current_size+=len(buff)
 ##        ratio=self.current_size/self.filesize
@@ -37,8 +37,6 @@ def just_download(directory,filename,dest,ftp_mtime,ftp_filesize):
     
     if PRINTING == True:
         print('File to download:',directory+'/'+filename)
-        print('Remote file size:',format_size(ftp_filesize))
-        print('Remote file modify time:',ftp_mtime)
         print('Local file name:',dest)
         print()
         local_file=FileTracker(dest,ftp_filesize)
@@ -72,13 +70,6 @@ def download(directory,filename,dest):
         cmd='python FTPDownloader.py %s %s %s %s %s %d %d'\
              %(USER,PASSWORD,directory,filename,dest,ftp_mtime,ftp_filesize)
         system(cmd)
-def format_size(size):
-    for i in ('B','K','M','G'):
-        if size>900:
-            size/=1024
-        else:
-            return '{:.1f}'.format(size)+i
-##download('新文件夹','新建 文本文档.txt')
 
 ftp = FTP()
 USER=''
@@ -89,7 +80,7 @@ if __name__ == '__main__':
 
     user,password,directory,filename,dest,ftp_mtime,ftp_filesize=argv[1:8]
     PRINTING=True
-    system('mode 100,10')
+    system('mode 100,7')
     system('color f2')
     system('title A simple downloader')
     print('This is a simple FTP downloader')
