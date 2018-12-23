@@ -6,7 +6,7 @@ from os import popen,makedirs,stat,_exit
 from os.path import isfile
 from re import match
 from win32api import MessageBox
-
+import FTPDownloader
 
 LOCAL_PREFIX='D:\\Desktop\\'
 rules={'zjx/303/(.*)':'哈哈哈',
@@ -29,11 +29,13 @@ def get_explorer_path():
     return GetWindowText(hwnd)
 
 def get_local_path(ftp_path,file):
-    p1=r'地址: ftp://(.*):.*\@6\.163\.193\.243/(.*)'
-    s_path='/'.join(match(p1,ftp_path).groups())
+    p1=r'地址: ftp://(.*):(.*)\@6\.163\.193\.243/(.*)'
+    ftp_info=match(p1,ftp_path).groups()
+    s_path=ftp_info[0]+'/'+ftp_info[2]
     p2=r'.*\\(.*)\[.*\](.*)'
     print(p2,file)
     file_name=''.join(match(p2,file).groups())
+    ftp_info+=(file_name,)
     local_path=LOCAL_PREFIX
     for k, v in rules.items():
         result=match(k,s_path)
@@ -46,7 +48,7 @@ def get_local_path(ftp_path,file):
     local_path=local_path.replace('/','\\')
     print(local_path,type(local_path))
     makedirs(local_path,exist_ok=True)
-    return local_path+file_name
+    return local_path+file_name,ftp_info
 
 def compare_mtime(file,dest):
     ftp_file=stat(file)
@@ -88,8 +90,10 @@ def log_and_exit(message = None):
     _exit(1)
     
 def main():
-    dest=get_local_path(get_explorer_path(),file)
+    dest,ftp_info=get_local_path(get_explorer_path(),file)
     print(dest)
+    FTPDownloader.init('6.163.193.243',21,*ftp_info[0:2])
+    FTPDownloader.download(*ftp_info[2:],dest=dest)
     compare_mtime(file,dest)
     result=SHFileOperation((0,shellcon.FO_MOVE, file, dest,
                      shellcon.FOF_ALLOWUNDO,None,None))
@@ -102,6 +106,3 @@ if __name__=='__main__':
         main()
     except Exception as e:
         log_and_exit(str(e))
-
-
-
