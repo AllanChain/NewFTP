@@ -3,22 +3,23 @@ from sys import stdout
 import time
 from os import _exit,stat,utime,popen,system
 from os.path import isfile
-
+from tqdm import tqdm
 
 class FileTracker():
     def __init__(self,filename,filesize=None):
         self.file=open(filename,'wb')
         self.filesize=filesize
         self.current_size=0
-        
+        self.pbar=tqdm(total=filesize,unit='B',unit_scale=True,ncols=60) 
     def write(self,buff):
-        self.current_size+=len(buff)
-        ratio=self.current_size/self.filesize
-        percentage=str(int(ratio*100))+'%'
-        bar='#'*int(ratio*40)+'_'*int(40-ratio*40)+'|'
-        size=format_size(self.current_size)
-        stdout.write(' |'.join((percentage,size,bar))+'\r')
-        stdout.flush()
+##        self.current_size+=len(buff)
+##        ratio=self.current_size/self.filesize
+##        percentage=str(int(ratio*100))+'%'
+##        bar='#'*int(ratio*40)+'_'*int(40-ratio*40)+'|'
+##        size=format_size(self.current_size)
+##        stdout.write(' |'.join((percentage,size,bar))+'\r')
+##        stdout.flush()
+        self.pbar.update(len(buff))
         self.file.write(buff)
     def  close(self):
         self.file.close()
@@ -69,6 +70,7 @@ def download(directory,filename,dest):
     else:
         cmd='python FTPDownloader.py %s %s %s %s %s %d %d'\
              %(USER,PASSWORD,directory,filename,dest,ftp_mtime,ftp_filesize)
+        print(cmd)
         system(cmd)
 def format_size(size):
     for i in ('B','K','M','G'):
@@ -87,7 +89,7 @@ if __name__ == '__main__':
 
     user,password,directory,filename,dest,ftp_mtime,ftp_filesize=argv[1:8]
     PRINTING=True
-    system('mode 70,10')
+    system('mode 90,30')
     system('color f2')
     system('title A simple downloader')
     print('This is a simple FTP downloader')
