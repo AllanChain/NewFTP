@@ -13,13 +13,6 @@ class FileTracker():
         self.pbar=tqdm(total=filesize,unit='B',unit_scale=True,ncols=60,
                        bar_format='{l_bar}{n_fmt}/{total_fmt}|{rate_fmt}{bar}{remaining}')
     def write(self,buff):
-##        self.current_size+=len(buff)
-##        ratio=self.current_size/self.filesize
-##        percentage=str(int(ratio*100))+'%'
-##        bar='#'*int(ratio*40)+'_'*int(40-ratio*40)+'|'
-##        size=format_size(self.current_size)
-##        stdout.write(' |'.join((percentage,size,bar))+'\r')
-##        stdout.flush()
         self.pbar.update(len(buff))
         self.file.write(buff)
     def  close(self):
@@ -33,8 +26,6 @@ def init(host,port,user,password):
     ftp.encoding='gbk'
 
 def just_download(directory,filename,dest,ftp_mtime,ftp_filesize):
-    #ftp_mtime,ftp_filesize=compare_mtime(directory,filename,dest)
-    
     if PRINTING == True:
         print('File to download:',directory+'/'+filename)
         print('Local file name:',dest)
@@ -47,8 +38,6 @@ def just_download(directory,filename,dest,ftp_mtime,ftp_filesize):
     local_file.close()
     utime(dest,(ftp_mtime,ftp_mtime))
     popen('"%s"'%dest)
-    #print(stat(dest))
-    #ftp.dir()
 
 def download(directory,filename,dest):
     ftp.cwd(directory)
@@ -101,7 +90,6 @@ try:
         _exit(0)
     else:
         PRINTING=False
-        ##ftp.dir()
 except Exception as e:
     from traceback import print_exc
     with open('FTPlog.txt','a') as f:

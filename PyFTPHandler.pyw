@@ -1,6 +1,4 @@
 import sys
-from win32com.shell.shell import SHFileOperation
-from win32com.shell import shellcon
 from win32gui import FindWindowEx, GetWindowText
 from os import popen,makedirs,stat,_exit,chdir
 from os.path import isfile
@@ -100,12 +98,6 @@ def main():
     print(dest)
     FTPDownloader.init('6.163.193.243',21,*ftp_info[0:2])
     FTPDownloader.download(*ftp_info[2:],dest=dest)
-##    compare_mtime(file,dest)
-##    result=SHFileOperation((0,shellcon.FO_MOVE, file, dest,
-##                     shellcon.FOF_ALLOWUNDO,None,None))
-##    print(result)
-##    popen('attrib -R '+dest).read()
-##    popen('"%s"'%dest)
 
 if __name__=='__main__':
     try:
