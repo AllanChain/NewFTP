@@ -2,7 +2,7 @@ import sys
 from win32com.shell.shell import SHFileOperation
 from win32com.shell import shellcon
 from win32gui import FindWindowEx, GetWindowText
-from os import popen,makedirs,stat,_exit
+from os import popen,makedirs,stat,_exit,chdir
 from os.path import isfile
 from re import match
 from win32api import MessageBox
@@ -19,7 +19,8 @@ rules={'zjx/303/(.*)':'哈哈哈',
         'ysh/(.*)': '地理',
         'czw/(.*)': '英语'}
 file=sys.argv[1]
-notify=lambda m: MessageBox(0, m, "Warning", 48)
+chdir(r'D:\Desktop\Scripts\TGScripts\NewFTP')
+notify=lambda m: MessageBox(0, str(m), "Warning", 48)
 def get_explorer_path():
     hwnd = 0
     children = ('CabinetWClass','WorkerW','ReBarWindow32','Address Band Root',
@@ -29,13 +30,18 @@ def get_explorer_path():
     return GetWindowText(hwnd)
 
 def get_local_path(ftp_path,file):
-    p1=r'地址: ftp://(.*):(.*)\@6\.163\.193\.243/(.*)'
+    p1=r'地址: ftp://(.*):(.*)\@6\.163\.193\.243(.*)'
     ftp_info=match(p1,ftp_path).groups()
-    s_path=ftp_info[0]+'/'+ftp_info[2]
+##    if ftp_info[2]=='':
+##        ftp_info=ftp_info[0:2]+('.',)
+    s_path=ftp_info[0]+ftp_info[2]
+    ftp_info=ftp_info[0:2]+(parse_CH(ftp_info[2]),)
     p2=r'.*\\(.*)\[.*\](.*)'
     print(p2,file)
     file_name=''.join(match(p2,file).groups())
+    file_name=file_name.replace('_',' ')
     ftp_info+=(file_name,)
+    #notify(str(ftp_info))
     local_path=LOCAL_PREFIX
     for k, v in rules.items():
         result=match(k,s_path)
@@ -94,12 +100,12 @@ def main():
     print(dest)
     FTPDownloader.init('6.163.193.243',21,*ftp_info[0:2])
     FTPDownloader.download(*ftp_info[2:],dest=dest)
-    compare_mtime(file,dest)
-    result=SHFileOperation((0,shellcon.FO_MOVE, file, dest,
-                     shellcon.FOF_ALLOWUNDO,None,None))
-    print(result)
-    popen('attrib -R '+dest).read()
-    popen('"%s"'%dest)
+##    compare_mtime(file,dest)
+##    result=SHFileOperation((0,shellcon.FO_MOVE, file, dest,
+##                     shellcon.FOF_ALLOWUNDO,None,None))
+##    print(result)
+##    popen('attrib -R '+dest).read()
+##    popen('"%s"'%dest)
 
 if __name__=='__main__':
     try:
