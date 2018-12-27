@@ -74,8 +74,8 @@ try:
         from sys import argv
 
         user,password,directory,filename,dest,ftp_mtime,ftp_filesize=argv[1:8]
-        if '"' in dest:
-            dest=dest[1:-1]
+##        if '"' in dest:
+##            dest=dest[1:-1]
         PRINTING=True
         system('mode 100,7')
         system('color f2')
