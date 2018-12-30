@@ -54,10 +54,8 @@ All the examples here are included in the default `config.yaml`.
 
 - Run Command From It
 > Replace the user name (e.g. `zxs`) with command you want starting with a dollar sign. (`$`)
-- Open local directory from it
-> Replace the user name with directory you want, ending with a slash or a back slash.
-- Open local file with it
-> Replace the user name with file name you want, not ending with a slash or a back slash.
+- Open local directory or file from it
+> Replace the user name with directory or file you want
 - A teacher with an abnormal combinations
 > Edit the second chunk of `config.yaml`.
 

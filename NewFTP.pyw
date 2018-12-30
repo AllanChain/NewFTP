@@ -35,17 +35,15 @@ class NameManager:
         print(num)
         if name.startswith('$'):
             #Out command
-            #Ex. $python -m some_module
+            #e.g. $python -m some_module
             cmd = name[1:]
-        elif name.endswith('/') or name.endswith('\\'):
-            #Directory, open with explorer.exe
-            #Ex. D:\Desctop\mess\
-            #Ex. ~/PythonPro/
-            cmd = 'start explorer "%s"'%name
         elif '/' in name or '\\' in name:
-            #Open file with default application
-            #Ex. D:\Desctop\1.txt
-            cmd = '"%s"'%name
+            #Directory, open with explorer.exe
+            #Or open file with default application
+            #e.g. D:\Desctop\mess\
+            #e.g. ~/PythonPro/
+            #e.g. D:\Desctop\1.txt
+            cmd = 'start explorer "%s"'%name
         elif name.isalpha() or name == '':
             #Ensure tha acnt is valid
             name1 = name+':'+self.pas_dict.get(name,'123')+'@' if name else ''
