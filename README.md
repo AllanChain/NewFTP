@@ -22,6 +22,7 @@ Not onlyvdo we offer `config.yaml` and `Styles/*.yaml` to edit its behavior and 
 
 ### Quick Start
 1. install python 3.X. (check `add python to PATH`)
+> 3.6+ if you want keep dict in order.
 2. install all the dependencies listed above via `pip install`.
 3. clone this repo to any where you like
 4. create a link `pythonw D:\path\to\repo\NewFTP.pyw` and assign a hot key. (conventionally `<F3>`)
