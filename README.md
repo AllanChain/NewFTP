@@ -8,6 +8,7 @@ Feel free to edit its looking.
 - pywin32
 - PyYAML
 - python-box
+- tqdm
 ### Features
 #### TOTALLY open source
 Licensed under AGPLv3
@@ -20,6 +21,7 @@ It means once python and some packages are installed, only KBs or a few MBs for 
 #### Changable whenever you want
 Not onlyvdo we offer `config.yaml` and `Styles/*.yaml` to edit its behavior and looking,  those who also love python can also edit the source file and PR via github.
 
+## NewFTP GUI
 ### Quick Start
 1. install python 3.X. (check `add python to PATH`)
 > 3.6+ if you want keep dict in order.
@@ -66,10 +68,16 @@ and easy to write, read and mantain. However, it takes ages to start.
 To cut down the waiting time, the minimized window is the best option.
 ### Why pywin32
 The smoother, the more win32API should be used. (please do not complain my abusing win32API)
-### TO DO
+
+## PyFTPHandler
+To take over the FTP file transfer when double click the file.
+### Features
+To be continued...
+## TO DO
 #### Black Magic
-- Dragging out the files newly uploaded from main window to the desktop. (this might be quite hard)
-- or an IExplorerBrowser application with ICommDlgBrowser to hack open file event. (This may require C++ program)
+- ~~Dragging out the files newly uploaded from main window to the desktop. (this might be quite hard)~~
+- ~~or an IExplorerBrowser application with ICommDlgBrowser to hack open file event. (This may require C++ program)~~
+- Find the better way to register PyFTPHandler.
 #### Good-looking Themes
 It is obvious that we are using Microsoft Windows7 theme. What if Linux theme or other awesome software, organizations?
 #### Advertising
