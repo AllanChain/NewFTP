@@ -1,6 +1,6 @@
 # NewFTP
 ### General
-A pygame powered GUI program to login the FTP system.
+A GUI program to login the FTP system and a background program to manage FTP file downloading.
 It's open source, unlike any other distribution in TG.
 Feel free to edit its looking.
 ### Controlling
