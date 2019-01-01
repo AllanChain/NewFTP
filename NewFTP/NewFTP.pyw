@@ -1,7 +1,8 @@
 from finder import find
 import pygame
 from pygame.locals import *
-from os import popen, environ, _exit
+from os import popen, environ, _exit, chdir
+import os.path
 from win32gui import FindWindow, SetWindowPos, PostMessage, GetCursorPos,\
      SetForegroundWindow, ShowWindow
 from win32api import MessageBox
@@ -131,6 +132,7 @@ def log_and_exit(message = None):
 def main():
     global MINI
     find()
+    chdir(os.path.dirname(os.path.abspath(__file__)))
     try:
         mgr,style = load()
     except Exception:

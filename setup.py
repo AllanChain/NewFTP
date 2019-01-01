@@ -13,9 +13,13 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/AllanChain/NewFTP",
     packages=setuptools.find_packages(),
+    package_data={
+        '':['*.pyw','*.yaml','Styles/*']},
+    install_requires=["PyYAML","python-box","pygame","tqdm","pywin32"],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU Affero General Public License v3",
         "Operating System :: Microsoft :: Windows :: Windows 7",
+        "Development Status :: 3 - Alpha",
     ],
 )
