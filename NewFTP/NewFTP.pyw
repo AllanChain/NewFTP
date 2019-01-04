@@ -1,7 +1,8 @@
 from finder import find
 import pygame
 from pygame.locals import *
-from os import popen, environ, _exit
+from os import popen, environ, _exit, chdir
+import os.path
 from win32gui import FindWindow, SetWindowPos, PostMessage, GetCursorPos,\
      SetForegroundWindow, ShowWindow
 from win32api import MessageBox
@@ -14,7 +15,7 @@ from box import SBox as Box
 class NameManager:
     def __init__(self,usr,pas_dict,perpage):
         self.acnts=tuple(usr.items())
-        self.pas_dict = {k:str(v) for k,v in pas_dict.items()}
+        self.pas_dict=pas_dict
         self.page = 0
         self.perpage = perpage
         self.maxpage = len(usr)//perpage
@@ -93,7 +94,7 @@ def load():
     style.maximum.height = style.maximum.rows*style.maximum.block.height
     mgr = NameManager(usr,pas,style.maximum.cols*style.maximum.rows-1)
     #print(usr,pas)
-    return mgr,style 
+    return mgr,style
 
 def draw_bg(style):
     BGSurf = pygame.surface.Surface((style.maximum.width,style.maximum.height))
@@ -131,6 +132,7 @@ def log_and_exit(message = None):
 def main():
     global MINI
     find()
+    chdir(os.path.dirname(os.path.abspath(__file__)))
     try:
         mgr,style = load()
     except Exception:

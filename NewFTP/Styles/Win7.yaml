@@ -26,6 +26,6 @@ minimum:
                 background: !!python/tuple [9, 68, 134, 10]
                 border: !!python/tuple [13, 140, 235, 10]
 font:
-        font: stliti
+        font: kaiti
         size: 22
         color: !!python/tuple [255, 255, 255]

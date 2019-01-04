@@ -47,7 +47,7 @@ Not onlyvdo we offer `config.yaml` and `Styles/*.yaml` to edit its behavior and 
 - left arrow to minimize
 - press Esc, namely Back to quit
 #### Keyboard and mouse
-- I think you know it 
+- I think you know it
 
 ### Advanced Usage
 All the examples here are included in the default `config.yaml`.
