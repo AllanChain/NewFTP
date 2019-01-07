@@ -10,7 +10,9 @@ cmd = argv[1]
 opt = argv[2] if len(argv) == 3 else ''
 if cmd == 'gui':
     if opt == '':
-        popen('pythonw NewFTP.pyw')
+        #popen('pythonw NewFTP.pyw')
+        from .NewFTP import main
+        main()
     if opt == 'config':
         system('explorer config.yaml')
     if opt == 'style.show':
@@ -25,3 +27,6 @@ if cmd == 'gui':
             
     if opt == 'log.show':
         system('explorer gui_log.txt')
+elif cmd == 'handle':
+    from .PyFTPHandler import main
+    main(opt)

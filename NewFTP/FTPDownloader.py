@@ -9,7 +9,12 @@ class FileTracker():
     def __init__(self,filename,filesize=None):
         self.file=open(filename,'wb')
         self.filesize=filesize
-        self.current_size=0
+        #self.current_size=0
+        system('mode 100,7')
+        system('color f2')
+        system('title A simple downloader')
+        print('This is a simple FTP downloader')
+        print()
         self.pbar=tqdm(total=filesize,unit='B',unit_scale=True,ncols=60,
                        bar_format='{l_bar}{n_fmt}/{total_fmt}|{rate_fmt}{bar}{remaining}')
     def write(self,buff):
@@ -77,11 +82,7 @@ try:
 ##        if '"' in dest:
 ##            dest=dest[1:-1]
         PRINTING=True
-        system('mode 100,7')
-        system('color f2')
-        system('title A simple downloader')
-        print('This is a simple FTP downloader')
-        print()
+        
     ##    init('192.168.123.99',2121,user,password)
         init('6.163.193.243',21,user,password)
         ftp.cwd(directory)

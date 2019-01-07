@@ -3,10 +3,11 @@ from win32gui import FindWindowEx, GetWindowText
 from os import popen,makedirs,stat,_exit,chdir
 from os.path import isfile
 from re import match
-from win32api import MessageBox
-import FTPDownloader
+from . import FTPDownloader
+from . import messager
 
 LOCAL_PREFIX='D:\\Desktop\\'
+chdir(r'D:\Desktop\Scripts\TGScripts\NewFTP\NewFTP')
 rules={'zjx/303/(.*)':'哈哈哈',
         'zjp/(.*)':'地理',
         'zjx/(.*)':'化学',
@@ -16,9 +17,8 @@ rules={'zjx/303/(.*)':'哈哈哈',
         'zxs/(.*)': '物理',
         'ysh/(.*)': '地理',
         'czw/(.*)': '英语'}
-file=sys.argv[1]
-chdir(r'D:\Desktop\Scripts\TGScripts\NewFTP')
-notify=lambda m: MessageBox(0, str(m), "Warning", 48)
+
+##notify=lambda m: MessageBox(0, str(m), "Warning", 48)
 def get_explorer_path():
     hwnd = 0
     children = ('CabinetWClass','WorkerW','ReBarWindow32','Address Band Root',
@@ -92,15 +92,16 @@ def log_and_exit(message = None):
         print_exc(file=f)
     print_exc()
     _exit(1)
+
+@messager.log_it
+def main(file=None):
+    if file is None:
+        file=sys.argv[1]
     
-def main():
     dest,ftp_info=get_local_path(get_explorer_path(),file)
     print(dest)
     FTPDownloader.init('6.163.193.243',21,*ftp_info[0:2])
     FTPDownloader.download(*ftp_info[2:],dest=dest)
 
 if __name__=='__main__':
-    try:
-        main()
-    except Exception as e:
-        log_and_exit(str(e))
+    main()

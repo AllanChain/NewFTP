@@ -1,8 +1,11 @@
 from win32api import MessageBox
 import win32con
 from os import _exit
-from time import ctime
-from traceback import print_exc
+
+
+warn = lambda m: MessageBox(0, str(m), "Warning",\
+                            win32con.MB_ICONEXCLAMATION|win32con.MB_TOPMOST)
+
 
 class Warner:
     
@@ -13,14 +16,16 @@ class Warner:
         self.message += message
         return
     def __del__(self):
-        MessageBox(win32con.NULL, self.message, "Warning",\
-                   win32con.MB_ICONEXCLAMATION|win32con.MB_TOPMOST)
+        from time import ctime
+        
+        warn(self.message)
         with open(self.file,'a') as f:
             f.write('\n'+'-'*20+ctime()+'-'*20+'\n')
             f.write(self.message)
-        print_exc()
+        print(self.message)
 
 def log_and_exit(file = 'log.txt',message = None, to_exit = True):
+    from traceback import print_exc
     if message is None:
         print_exc(file=Warner(file))
     else:
@@ -28,10 +33,16 @@ def log_and_exit(file = 'log.txt',message = None, to_exit = True):
     if to_exit == True:
         _exit(1)
 
-warn = lambda m: MessageBox(0, str(m), "Warning",\
-                            win32con.MB_ICONEXCLAMATION|win32con.MB_TOPMOST)
+def log_it(f):
+    def func(*args, **kargs):
+        try:
+            f(*args, **kargs)
+        except:
+            log_and_exit()
+    return func
+            
 
-try:
-    0/0
-except:
-    log_and_exit()
+##@log_it
+##def h():
+##    return 0/0
+##h()
