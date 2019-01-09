@@ -2,8 +2,9 @@ from ftplib import FTP,error_perm
 from sys import stdout
 import time
 from os import _exit,stat,utime,popen,system
-from os.path import isfile
+from os.path import isfile,dirname,abspath
 from tqdm import tqdm
+from . import messager
 
 class FileTracker():
     def __init__(self,filename,filesize=None):
@@ -42,7 +43,7 @@ def just_download(directory,filename,dest,ftp_mtime,ftp_filesize):
     ftp.retrbinary('RETR %s'%filename,local_file.write)
     local_file.close()
     utime(dest,(ftp_mtime,ftp_mtime))
-    popen('"%s"'%dest)
+    popen('explorer "%s"'%dest)
 
 def download(directory,filename,dest):
     ftp.cwd(directory)
@@ -57,42 +58,41 @@ def download(directory,filename,dest):
     if isfile(dest):
         local_file=stat(dest)
         if ftp_mtime == local_file.st_mtime:
-            popen('"%s"'%dest)
+            popen('explorer "%s"'%dest)
             _exit(0)
         if ftp_mtime >= local_file.st_mtime:
             popen('DEL "%s"'%dest)
     ftp_filesize=ftp.size(filename)
-    if ftp_filesize < SILENT:
-        just_download(directory,filename,dest,ftp_mtime,ftp_filesize)
-    else:
-        cmd='python FTPDownloader.py %s %s "%s" "%s" "%s" %d %d'\
-             %(USER,PASSWORD,directory,filename,dest,ftp_mtime,ftp_filesize)
-        print(cmd)
-        system(cmd)
+    just_download(directory,filename,dest,ftp_mtime,ftp_filesize)
+    #if ftp_filesize < SILENT:
+        #just_download(directory,filename,dest,ftp_mtime,ftp_filesize)
+    #else:
+        #downloader = dirname(abspath(__file__))+'\\FTPDownloader.py'
+        #cmd='python %s %s %s "%s" "%s" "%s" %d %d'\
+             #%(downloader,USER,PASSWORD,directory,filename,dest,ftp_mtime,ftp_filesize)
+        #cmd = 'python d:\\Desktop\\123.py'
+        #messager.warn(cmd)
+        #system(cmd)
 
 ftp = FTP()
 USER=''
 PASSWORD=''
 SILENT=1024*800
-try:
-    if __name__ == '__main__':
-        from sys import argv
+PRINTING=False
 
-        user,password,directory,filename,dest,ftp_mtime,ftp_filesize=argv[1:8]
-##        if '"' in dest:
-##            dest=dest[1:-1]
-        PRINTING=True
-        
-    ##    init('192.168.123.99',2121,user,password)
-        init('6.163.193.243',21,user,password)
-        ftp.cwd(directory)
-        just_download(directory,filename,dest,int(ftp_mtime),int(ftp_filesize))
-        time.sleep(0.5)
-        _exit(0)
-    else:
-        PRINTING=False
-except Exception as e:
-    from traceback import print_exc
-    with open('FTPlog.txt','a') as f:
-        print_exc(file=f)
-        f.write(str(argv))
+@messager.log_it
+def main(user,password,directory,filename,dest,ftp_mtime,ftp_filesize):
+    global PRINTING
+    from sys import argv
+
+    PRINTING=True
+
+##    init('192.168.123.99',2121,user,password)
+    init('6.163.193.243',21,user,password)
+    ftp.cwd(directory)
+    just_download(directory,filename,dest,int(ftp_mtime),int(ftp_filesize))
+    time.sleep(0.5)
+##messager.warn(main)
+if __name__ == '__main__':
+    from sys import argv
+    main(*argv[1:8])
