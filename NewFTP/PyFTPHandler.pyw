@@ -74,8 +74,7 @@ def main(file=None):
         file=sys.argv[1]
 
     dest,ftp_info=get_local_path(get_explorer_path(),file)
-    #FTPDownloader.init('6.163.193.243',21,*ftp_info[0:2])
-    FTPDownloader.init('192.168.123.99',2121,*ftp_info[0:2])
+    FTPDownloader.init(*ftp_info[0:2])
     FTPDownloader.download(*ftp_info[2:],dest=dest)
 
 if __name__=='__main__':

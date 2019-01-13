@@ -9,6 +9,14 @@ try:
 except ImportError:
     import messager
 
+ftp = FTP()
+USER=''
+PASSWORD=''
+SILENT=1024*800
+PRINTING=False
+HOST=192.168.123.99' #6.163.193.243
+PORT=2121 #21
+
 class FileTracker():
     def __init__(self,filename,filesize=None):
         self.file=open(filename,'wb')
@@ -27,10 +35,10 @@ class FileTracker():
     def  close(self):
         self.file.close()
 
-def init(host,port,user,password):
+def init(user,password):
     global USER,PASSWORD
     USER,PASSWORD=user,password
-    ftp.connect(host,port)
+    ftp.connect(HOST,PORT)
     ftp.login(user,password)
     ftp.encoding='gbk'
 
@@ -80,11 +88,6 @@ def download(directory,filename,dest):
         #messager.warn(cmd)
         system(cmd)
 
-ftp = FTP()
-USER=''
-PASSWORD=''
-SILENT=1024*800
-PRINTING=False
 
 @messager.log_it(file = 'log_download.txt')
 def main(user,password,directory,filename,dest,ftp_mtime,ftp_filesize):
@@ -93,8 +96,7 @@ def main(user,password,directory,filename,dest,ftp_mtime,ftp_filesize):
 
     PRINTING=True
 
-##    init('192.168.123.99',2121,user,password)
-    init('6.163.193.243',21,user,password)
+    init(user,password)
     ftp.cwd(directory)
     just_download(directory,filename,dest,int(ftp_mtime),int(ftp_filesize))
     time.sleep(0.5)
