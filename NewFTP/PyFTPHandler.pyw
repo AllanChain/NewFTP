@@ -27,8 +27,13 @@ def get_explorer_path():
     return GetWindowText(hwnd)
 
 def get_local_path(ftp_path,file):
-    p1=r'地址: ftp://(.*):(.*)\@6\.163\.193\.243(.*)'
-    ftp_info=match(p1,ftp_path).groups()
+    try:
+        p1=r'地址: ftp://(.*):(.*)\@6\.163\.193\.243(.*)'
+        ftp_info=match(p1,ftp_path).groups()
+    except:
+        p1 = r'地址: ftp://(.*)\@192\.168\.123\.99\:2121(.*)'
+        ftp_info=match(p1,ftp_path).groups()
+        ftp_info=(ftp_info[0],'123',ftp_info[1])
 ##    if ftp_info[2]=='':
 ##        ftp_info=ftp_info[0:2]+('.',)
     s_path=ftp_info[0]+ftp_info[2]
