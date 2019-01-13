@@ -14,7 +14,7 @@ setuptools.setup(
     url="https://github.com/AllanChain/NewFTP",
     packages=setuptools.find_packages(),
     package_data={
-        '':['*.pyw','data/*','data/Styles/*']},
+        '':['*.pyw','data/*','data/Styles/*','data/Styles/Img/*']},
     install_requires=["PyYAML","python-box","pygame","tqdm","pywin32"],
     classifiers=[
         "Programming Language :: Python :: 3",
