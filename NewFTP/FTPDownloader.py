@@ -21,14 +21,8 @@ class FileTracker():
     def __init__(self,filename,filesize=None):
         self.file=open(filename,'wb')
         self.filesize=filesize
-        #self.current_size=0
-        system('mode 100,7')
-        system('color f2')
-        system('title A simple downloader')
-        print('This is a simple FTP downloader')
-        print()
         self.pbar=tqdm(total=filesize,unit='B',unit_scale=True,ncols=60,
-                       bar_format='{l_bar}{n_fmt}/{total_fmt}|{rate_fmt}{bar}{remaining}')
+            bar_format='{l_bar}{n_fmt}/{total_fmt}|{rate_fmt}{bar}{remaining}')
     def write(self,buff):
         self.pbar.update(len(buff))
         self.file.write(buff)
@@ -44,13 +38,17 @@ def init(user,password):
 
 def just_download(directory,filename,dest,ftp_mtime,ftp_filesize):
     if PRINTING == True:
+        system('mode 100,7')
+        system('color f2')
+        system('title A simple downloader')
+        print('This is a simple FTP downloader')
+        print()
         print('File to download:',directory+'/'+filename)
         print('Local file name:',dest)
         print()
         local_file=FileTracker(dest,ftp_filesize)
     else:
         local_file=open(dest,'wb')
-##    ftp.dir()
     ftp.retrbinary('RETR %s'%filename,local_file.write)
     local_file.close()
     utime(dest,(ftp_mtime,ftp_mtime))
@@ -74,7 +72,6 @@ def download(directory,filename,dest):
         if ftp_mtime >= local_file.st_mtime:
             popen('DEL "%s"'%dest)
     ftp_filesize=ftp.size(filename)
-    #just_download(directory,filename,dest,ftp_mtime,ftp_filesize)
     if ftp_filesize < SILENT:
         just_download(directory,filename,dest,ftp_mtime,ftp_filesize)
     else:
@@ -84,7 +81,6 @@ def download(directory,filename,dest):
         # if you use -m NewFTP.FTPDownloader, python can't recognize the package
         #cmd='python -m NewFTP.FTPDownloader %s %s "%s" "%s" "%s" %d %d & pause'\
         #     %(USER,PASSWORD,directory,filename,dest,ftp_mtime,ftp_filesize)
-        #cmd = 'python d:\\Desktop\\123.py'
         #messager.warn(cmd)
         system(cmd)
 
