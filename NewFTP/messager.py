@@ -8,7 +8,7 @@ warn = lambda m: MessageBox(0, str(m), "Warning",\
 
 
 class Warner:
-    
+
     def __init__(self,file):
         self.message = ''
         self.file = file
@@ -17,7 +17,7 @@ class Warner:
         return
     def __del__(self):
         from time import ctime
-        
+
         warn(self.message)
         with open(self.file,'a') as f:
             f.write('\n'+'-'*20+ctime()+'-'*20+'\n')
@@ -33,14 +33,16 @@ def log_and_exit(file = 'log.txt',message = None, to_exit = True):
     if to_exit == True:
         _exit(1)
 
-def log_it(f):
-    def func(*args, **kargs):
-        try:
-            f(*args, **kargs)
-        except:
-            log_and_exit()
-    return func
-            
+def log_it(file = 'log.txt', to_exit = True):
+    def dec(f):
+        def func(*args, **kargs):
+            try:
+                f(*args, **kargs)
+            except:
+                log_and_exit(file = file, to_exit = to_exit)
+        return func
+    return dec
+
 
 ##@log_it
 ##def h():

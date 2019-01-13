@@ -69,7 +69,7 @@ def parse_CH(s):
             i+=1
     return r
 
-@messager.log_it
+@messager.log_it(file='log_handler.txt')
 def main(file=None):
     if file is None:
         file=sys.argv[1]

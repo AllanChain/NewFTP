@@ -129,7 +129,7 @@ def draw_bg(style):
 ##        print_exc(file=f)
 ##    print_exc()
 ##    _exit(1)
-messager.log_it
+@messager.log_it(file = 'log_gui.txt')
 def main():
     global MINI
     find()
@@ -137,7 +137,7 @@ def main():
     try:
         mgr,style = load()
     except Exception:
-        messager.log_and_exit("配置文件加载失败！")
+        messager.log_and_exit(message = "配置文件加载失败！")
     environ['SDL_VIDEO_WINDOW_POS']='%d,%d'%(style.maximum.pos.x,style.maximum.pos.y)
     DIS = pygame.display.set_mode((style.maximum.width,style.maximum.height), NOFRAME)
     MINI = False

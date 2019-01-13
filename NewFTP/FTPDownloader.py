@@ -86,7 +86,7 @@ PASSWORD=''
 SILENT=1024*800
 PRINTING=False
 
-@messager.log_it
+@messager.log_it(file = 'log_download.txt')
 def main(user,password,directory,filename,dest,ftp_mtime,ftp_filesize):
     global PRINTING
     from sys import argv
