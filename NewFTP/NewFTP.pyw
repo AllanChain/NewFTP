@@ -119,16 +119,6 @@ def draw_bg(style):
                     style.minimum.height), style.minimum.border)
     return BGSurf, BGMSurf
 
-##def log_and_exit(message = None):
-##    from time import ctime
-##    from traceback import print_exc
-##    if not message is None:
-##        MessageBox(win32con.NULL, message, "Warning", win32con.MB_ICONEXCLAMATION)
-##    with open('log.txt','a') as f:
-##        f.write('\n'+'-'*20+ctime()+'-'*20+'\n')
-##        print_exc(file=f)
-##    print_exc()
-##    _exit(1)
 @messager.log_it(file = 'log_gui.txt')
 def main():
     global MINI
