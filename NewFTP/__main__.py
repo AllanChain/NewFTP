@@ -3,16 +3,12 @@ from os import system, popen, chdir
 import os.path
 from . import messager
 
-@messager.log_it
+@messager.log_it(file = 'log_main.txt')
 def main():
-    mypath = os.path.dirname(os.path.abspath(__file__))
-    print(mypath)
-    chdir(mypath)
     cmd = argv[1]
     if cmd == 'gui':
         opt = argv[2] if len(argv) == 3 else ''
         if opt == '':
-            #popen('pythonw NewFTP.pyw')
             from .NewFTP import main
             main()
         if opt == 'config':
