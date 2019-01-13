@@ -1,5 +1,43 @@
 import setuptools
+from setuptools.command.install import install
 
+def short_target(filename,dest,arg):
+    import os, sys
+    import pythoncom
+    from win32com.shell import shell, shellcon
+
+
+    desktop_path = shell.SHGetFolderPath (0, shellcon.CSIDL_DESKTOP, 0, 0)
+    shortcut_path = os.path.join (desktop_path, filename)
+    if not os.path.exists(shortcut_path):
+        shortcut = pythoncom.CoCreateInstance (
+            shell.CLSID_ShellLink,
+            None,
+            pythoncom.CLSCTX_INPROC_SERVER,
+            shell.IID_IShellLink
+        )
+        with open (shortcut_path,'w'):
+            pass
+        persist_file = shortcut.QueryInterface (pythoncom.IID_IPersistFile)
+        persist_file.Load (shortcut_path)
+        shortcut.SetPath(dest)
+        shortcut.SetArguments(arg)
+        shortcut.SetHotkey(114)
+        persist_file.Save (shortcut_path, 0)
+
+
+
+class CustomInstall(install):
+    def run(self):
+        from shutil import copytree
+        from os.path import dirname, abspath, expanduser, isdir, split
+        from sys import executable
+        install.run(self)
+        if not isdir(expanduser('~/.NewFTP')):
+            src = dirname(abspath(__file__))+'\\NewFTP\\data'
+            copytree(src, expanduser('~/.NewFTP'))
+        short_target("FTP.lnk",split(executable)[0]+\
+                     '\\pythonw.exe','-m NewFTP.NewFTP')
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
@@ -16,6 +54,7 @@ setuptools.setup(
     package_data={
         '':['*.pyw','data/*','data/Styles/*','data/Styles/Img/*']},
     install_requires=["PyYAML","python-box","pygame","tqdm","pywin32"],
+    cmdclass={'install': CustomInstall},
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU Affero General Public License v3",
