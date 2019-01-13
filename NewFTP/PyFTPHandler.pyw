@@ -7,7 +7,7 @@ from . import FTPDownloader
 from . import messager
 import yaml
 
-with open('download_setting.yaml','r',encoding='utf-8') as f:
+with open('download_config.yaml','r',encoding='utf-8') as f:
     rules,setting=yaml.load_all(f)
 LOCAL_PREFIX=setting['LOCAL_PREFIX']
 

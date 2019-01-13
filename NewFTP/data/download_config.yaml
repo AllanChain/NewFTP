@@ -10,5 +10,3 @@
 ...
 ---
 LOCAL_PREFIX: 'D:\Desktop\'
-HOST: '192.168.123.99'
-PORT: 2121 

@@ -12,7 +12,7 @@ def main():
             from .NewFTP import main
             main()
         if opt == 'config':
-            system('explorer config.yaml')
+            system('explorer gui_config.yaml')
         if opt == 'style.show':
             system('explorer Styles')
     ##    if opt == 'style.install':

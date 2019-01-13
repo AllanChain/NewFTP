@@ -11,6 +11,7 @@ import win32con
 import yaml
 from box import SBox as Box
 from . import messager
+from .ftp_parser import SERVER
 
 
 class NameManager:
@@ -52,7 +53,7 @@ class NameManager:
             #If name is '', no :@ needed
             #here get(name,'123') means default password is '123'
             print (name1)
-            cmd = 'start explorer ftp://%s6.163.193.243'%name1
+            cmd = 'start explorer ftp://%s%s'%(name1,SERVER)
         popen(cmd)
 def C(color):
     '''Color converting'''
@@ -68,7 +69,7 @@ def C(color):
             n = int(color, base=16)
             return (n>>16) % 256, (n>>8) % 256, n % 256
 def load():
-    with open('config.yaml','r',encoding='utf-8') as f:
+    with open('gui_config.yaml','r',encoding='utf-8') as f:
         usr,pas,sty = yaml.load_all(f)
     try:
         with open('styles/' + sty['style'] + '.yaml',encoding='utf-8') as f:
