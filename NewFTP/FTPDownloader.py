@@ -2,7 +2,7 @@ from ftplib import FTP,error_perm
 from sys import stdout
 import time
 from os import _exit,stat,utime,popen,system
-from os.path import isfile,dirname,abspath
+from os.path import isfile,dirname,abspath,splitext
 from tqdm import tqdm
 try:
     from . import messager
@@ -20,6 +20,10 @@ PORT=2121 #21
 class FileTracker():
     def __init__(self,filename,filesize=None):
         self.file=open(filename,'wb')
+        self.open_it=None
+        if splitext(filename)[1] in ('.mp4','.mp3'):
+            popen('explorer "%s"'%filename)
+            self.open_it=False
         self.filesize=filesize
         self.pbar=tqdm(total=filesize,unit='B',unit_scale=True,ncols=60,
             bar_format='{l_bar}{n_fmt}/{total_fmt}|{rate_fmt}{bar}{remaining}')
@@ -28,6 +32,7 @@ class FileTracker():
         self.file.write(buff)
     def  close(self):
         self.file.close()
+        return self.open_it
 
 def init(user,password):
     global USER,PASSWORD
@@ -50,9 +55,10 @@ def just_download(directory,filename,dest,ftp_mtime,ftp_filesize):
     else:
         local_file=open(dest,'wb')
     ftp.retrbinary('RETR %s'%filename,local_file.write)
-    local_file.close()
+    open_flag=local_file.close()
     utime(dest,(ftp_mtime,ftp_mtime))
-    popen('explorer "%s"'%dest)
+    if open_flag is None:
+        popen('explorer "%s"'%dest)
 
 def download(directory,filename,dest):
     ftp.cwd(directory)
