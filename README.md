@@ -8,6 +8,7 @@ Feel free to edit its looking.
 - pywin32
 - PyYAML
 - python-box
+- tqdm
 ### Features
 #### TOTALLY open source
 Licensed under AGPLv3
@@ -20,8 +21,10 @@ It means once python and some packages are installed, only KBs or a few MBs for 
 #### Changable whenever you want
 Not onlyvdo we offer `config.yaml` and `Styles/*.yaml` to edit its behavior and looking,  those who also love python can also edit the source file and PR via github.
 
+## NewFTP GUI
 ### Quick Start
 1. install python 3.X. (check `add python to PATH`)
+> 3.6+ if you want keep dict in order.
 2. install all the dependencies listed above via `pip install`.
 3. clone this repo to any where you like
 4. create a link `pythonw D:\path\to\repo\NewFTP.pyw` and assign a hot key. (conventionally `<F3>`)
@@ -54,12 +57,10 @@ All the examples here are included in the default `config.yaml`.
 
 - Run Command From It
 > Replace the user name (e.g. `zxs`) with command you want starting with a dollar sign. (`$`)
-- Open local directory from it
-> Replace the user name with directory you want, ending with a slash or a back slash.
-- Open local file with it
-> Replace the user name with file name you want, not ending with a slash or a back slash.
+- Open local directory or file from it
+> Replace the user name with directory or file you want
 - A teacher with an abnormal combinations
-> Edit the second chunk of `config.yaml`. Note combinations made up with pure digits shoud be wrapped with quotes.
+> Edit the second chunk of `config.yaml`.
 
 ### Why minimized floating window
 As you know, python is a language for the 21st century,
@@ -67,10 +68,16 @@ and easy to write, read and mantain. However, it takes ages to start.
 To cut down the waiting time, the minimized window is the best option.
 ### Why pywin32
 The smoother, the more win32API should be used. (please do not complain my abusing win32API)
-### TO DO
+
+## PyFTPHandler
+To take over the FTP file transfer when double click the file.
+### Features
+To be continued...
+## TO DO
 #### Black Magic
-- Dragging out the files newly uploaded from main window to the desktop. (this might be quite hard)
-- or an IExplorerBrowser application with ICommDlgBrowser to hack open file event. (This may require C++ program)
+- ~~Dragging out the files newly uploaded from main window to the desktop. (this might be quite hard)~~
+- ~~or an IExplorerBrowser application with ICommDlgBrowser to hack open file event. (This may require C++ program)~~
+- Find the better way to register PyFTPHandler.
 #### Good-looking Themes
 It is obvious that we are using Microsoft Windows7 theme. What if Linux theme or other awesome software, organizations?
 #### Advertising
