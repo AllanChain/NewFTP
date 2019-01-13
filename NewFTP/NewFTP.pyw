@@ -133,7 +133,6 @@ def draw_bg(style):
 def main():
     global MINI
     find()
-    chdir(os.path.dirname(os.path.abspath(__file__)))
     try:
         mgr,style = load()
     except Exception:
