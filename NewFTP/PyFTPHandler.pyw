@@ -5,17 +5,12 @@ from os.path import isfile
 from re import match
 from . import FTPDownloader
 from . import messager
+import yaml
 
-LOCAL_PREFIX='D:\\Desktop\\'
-rules={'zjx/303/(.*)':'哈哈哈',
-        'zjp/(.*)':'地理',
-        'zjx/(.*)':'化学',
-        'zm/(.*)': '语文',
-        'cjun/(.*)': '数学',
-        'xmh/(.*)': '英语\\课件',
-        'zxs/(.*)': '物理',
-        'ysh/(.*)': '地理',
-        'czw/(.*)': '英语'}
+with open('download_setting.yaml','r',encoding='utf-8') as f:
+    rules,setting=yaml.load_all(f)
+LOCAL_PREFIX=setting['LOCAL_PREFIX']
+
 
 ##notify=lambda m: MessageBox(0, str(m), "Warning", 48)
 def get_explorer_path():

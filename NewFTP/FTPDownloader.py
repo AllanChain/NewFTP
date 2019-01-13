@@ -4,6 +4,7 @@ import time
 from os import _exit,stat,utime,popen,system
 from os.path import isfile,dirname,abspath,splitext
 from tqdm import tqdm
+import yaml
 try:
     from . import messager
 except ImportError:
@@ -14,8 +15,8 @@ USER=''
 PASSWORD=''
 SILENT=1024*800
 PRINTING=False
-HOST='192.168.123.99' #6.163.193.243
-PORT=2121 #21
+with open('download_setting.yaml','r',encoding='utf-8') as f:
+    rules,SERVER=yaml.load_all(f)
 
 class FileTracker():
     def __init__(self,filename,filesize=None):
@@ -37,7 +38,7 @@ class FileTracker():
 def init(user,password):
     global USER,PASSWORD
     USER,PASSWORD=user,password
-    ftp.connect(HOST,PORT)
+    ftp.connect(SERVER['HOST'],SERVER['PORT'])
     ftp.login(user,password)
     ftp.encoding='gbk'
 
