@@ -1,13 +1,12 @@
 import sys
 from win32gui import FindWindowEx, GetWindowText
-from os import popen,makedirs,stat,_exit,chdir
+from os import popen,makedirs,stat,_exit
 from os.path import isfile
 from re import match
 from . import FTPDownloader
 from . import messager
 
 LOCAL_PREFIX='D:\\Desktop\\'
-chdir(r'D:\Desktop\Scripts\TGScripts\NewFTP\NewFTP')
 rules={'zjx/303/(.*)':'哈哈哈',
         'zjp/(.*)':'地理',
         'zjx/(.*)':'化学',

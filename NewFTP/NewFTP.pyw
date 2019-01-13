@@ -1,7 +1,7 @@
 from .finder import find
 import pygame
 from pygame.locals import *
-from os import popen, environ, _exit, chdir
+from os import popen, environ, _exit
 import os.path
 from win32gui import FindWindow, SetWindowPos, PostMessage, GetCursorPos,\
      SetForegroundWindow, ShowWindow
