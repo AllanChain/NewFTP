@@ -74,6 +74,7 @@ def download(directory,filename,dest):
         local_file=stat(dest)
         if ftp_mtime == local_file.st_mtime:
             popen('explorer "%s"'%dest)
+            ftp.close()
             _exit(0)
         if ftp_mtime >= local_file.st_mtime:
             popen('DEL "%s"'%dest)
@@ -89,6 +90,7 @@ def download(directory,filename,dest):
         #     %(USER,PASSWORD,directory,filename,dest,ftp_mtime,ftp_filesize)
         #messager.warn(cmd)
         system(cmd)
+    ftp.close()
 
 
 @messager.log_it(file = 'log_download.txt')
@@ -101,6 +103,7 @@ def main(user,password,directory,filename,dest,ftp_mtime,ftp_filesize):
     init(user,password)
     ftp.cwd(directory)
     just_download(directory,filename,dest,int(ftp_mtime),int(ftp_filesize))
+    ftp.close()
     time.sleep(0.5)
 ##messager.warn(main)
 if __name__ == '__main__':
