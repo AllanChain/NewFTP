@@ -9,8 +9,8 @@ warn = lambda m: MessageBox(0, str(m), "Warning",\
 
 class Warner:
 
-    def __init__(self,file):
-        self.message = ''
+    def __init__(self,file,message):
+        self.message = message
         self.file = file
     def write(self,message):
         self.message += message
@@ -24,12 +24,10 @@ class Warner:
             f.write(self.message)
         print(self.message)
 
-def log_and_exit(file = 'log.txt',message = None, to_exit = True):
+def log_and_exit(file = 'log.txt', message = '', to_exit = True):
     from traceback import print_exc
-    if message is None:
-        print_exc(file=Warner(file))
-    else:
-        warn(message)
+
+    print_exc(file=Warner(file, message))
     if to_exit == True:
         _exit(1)
 
