@@ -72,7 +72,9 @@ The smoother, the more win32API should be used. (please do not complain my abusi
 ## PyFTPHandler
 To take over the FTP file transfer when double click the file.
 ### Features
-To be continued...
+- a simple FTPDownloader CLI
+- watching while downloading
+- regular expression powered file sorting
 ## TO DO
 #### Black Magic
 - ~~Dragging out the files newly uploaded from main window to the desktop. (this might be quite hard)~~
