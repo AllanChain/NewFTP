@@ -2,42 +2,57 @@ from ftplib import FTP,error_perm
 from sys import stdout
 import time
 from os import _exit,stat,utime,popen,system
-from os.path import isfile
+from os.path import isfile,dirname,abspath
 from tqdm import tqdm
+try:
+    from . import messager
+except ImportError:
+    import messager
+
+ftp = FTP()
+USER=''
+PASSWORD=''
+SILENT=1024*800
+PRINTING=False
+HOST='192.168.123.99' #6.163.193.243
+PORT=2121 #21
 
 class FileTracker():
     def __init__(self,filename,filesize=None):
         self.file=open(filename,'wb')
         self.filesize=filesize
-        self.current_size=0
         self.pbar=tqdm(total=filesize,unit='B',unit_scale=True,ncols=60,
-                       bar_format='{l_bar}{n_fmt}/{total_fmt}|{rate_fmt}{bar}{remaining}')
+            bar_format='{l_bar}{n_fmt}/{total_fmt}|{rate_fmt}{bar}{remaining}')
     def write(self,buff):
         self.pbar.update(len(buff))
         self.file.write(buff)
     def  close(self):
         self.file.close()
 
-def init(host,port,user,password):
+def init(user,password):
     global USER,PASSWORD
     USER,PASSWORD=user,password
-    ftp.connect(host,port)
+    ftp.connect(HOST,PORT)
     ftp.login(user,password)
     ftp.encoding='gbk'
 
 def just_download(directory,filename,dest,ftp_mtime,ftp_filesize):
     if PRINTING == True:
+        system('mode 100,7')
+        system('color f2')
+        system('title A simple downloader')
+        print('This is a simple FTP downloader')
+        print()
         print('File to download:',directory+'/'+filename)
         print('Local file name:',dest)
         print()
         local_file=FileTracker(dest,ftp_filesize)
     else:
         local_file=open(dest,'wb')
-##    ftp.dir()
     ftp.retrbinary('RETR %s'%filename,local_file.write)
     local_file.close()
     utime(dest,(ftp_mtime,ftp_mtime))
-    popen('"%s"'%dest)
+    popen('explorer "%s"'%dest)
 
 def download(directory,filename,dest):
     ftp.cwd(directory)
@@ -52,7 +67,7 @@ def download(directory,filename,dest):
     if isfile(dest):
         local_file=stat(dest)
         if ftp_mtime == local_file.st_mtime:
-            popen('"%s"'%dest)
+            popen('explorer "%s"'%dest)
             _exit(0)
         if ftp_mtime >= local_file.st_mtime:
             popen('DEL "%s"'%dest)
@@ -60,38 +75,28 @@ def download(directory,filename,dest):
     if ftp_filesize < SILENT:
         just_download(directory,filename,dest,ftp_mtime,ftp_filesize)
     else:
-        cmd='python FTPDownloader.py %s %s "%s" "%s" "%s" %d %d'\
-             %(USER,PASSWORD,directory,filename,dest,ftp_mtime,ftp_filesize)
-        print(cmd)
+        downloader = dirname(abspath(__file__))+'\\FTPDownloader.py'
+        cmd='python %s %s %s "%s" "%s" "%s" %d %d'\
+             %(downloader,USER,PASSWORD,directory,filename,dest,ftp_mtime,ftp_filesize)
+        # if you use -m NewFTP.FTPDownloader, python can't recognize the package
+        #cmd='python -m NewFTP.FTPDownloader %s %s "%s" "%s" "%s" %d %d & pause'\
+        #     %(USER,PASSWORD,directory,filename,dest,ftp_mtime,ftp_filesize)
+        #messager.warn(cmd)
         system(cmd)
 
-ftp = FTP()
-USER=''
-PASSWORD=''
-SILENT=1024*800
-try:
-    if __name__ == '__main__':
-        from sys import argv
 
-        user,password,directory,filename,dest,ftp_mtime,ftp_filesize=argv[1:8]
-##        if '"' in dest:
-##            dest=dest[1:-1]
-        PRINTING=True
-        system('mode 100,7')
-        system('color f2')
-        system('title A simple downloader')
-        print('This is a simple FTP downloader')
-        print()
-    ##    init('192.168.123.99',2121,user,password)
-        init('6.163.193.243',21,user,password)
-        ftp.cwd(directory)
-        just_download(directory,filename,dest,int(ftp_mtime),int(ftp_filesize))
-        time.sleep(0.5)
-        _exit(0)
-    else:
-        PRINTING=False
-except Exception as e:
-    from traceback import print_exc
-    with open('FTPlog.txt','a') as f:
-        print_exc(file=f)
-        f.write(str(argv))
+@messager.log_it(file = 'log_download.txt')
+def main(user,password,directory,filename,dest,ftp_mtime,ftp_filesize):
+    global PRINTING
+    from sys import argv
+
+    PRINTING=True
+
+    init(user,password)
+    ftp.cwd(directory)
+    just_download(directory,filename,dest,int(ftp_mtime),int(ftp_filesize))
+    time.sleep(0.5)
+##messager.warn(main)
+if __name__ == '__main__':
+    from sys import argv
+    main(*argv[1:8])

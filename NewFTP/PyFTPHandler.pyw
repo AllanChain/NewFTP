@@ -1,10 +1,10 @@
 import sys
 from win32gui import FindWindowEx, GetWindowText
-from os import popen,makedirs,stat,_exit,chdir
+from os import popen,makedirs,stat,_exit
 from os.path import isfile
 from re import match
-from win32api import MessageBox
-import FTPDownloader
+from . import FTPDownloader
+from . import messager
 
 LOCAL_PREFIX='D:\\Desktop\\'
 rules={'zjx/303/(.*)':'哈哈哈',
@@ -16,9 +16,8 @@ rules={'zjx/303/(.*)':'哈哈哈',
         'zxs/(.*)': '物理',
         'ysh/(.*)': '地理',
         'czw/(.*)': '英语'}
-file=sys.argv[1]
-chdir(r'D:\Desktop\Scripts\TGScripts\NewFTP')
-notify=lambda m: MessageBox(0, str(m), "Warning", 48)
+
+##notify=lambda m: MessageBox(0, str(m), "Warning", 48)
 def get_explorer_path():
     hwnd = 0
     children = ('CabinetWClass','WorkerW','ReBarWindow32','Address Band Root',
@@ -28,8 +27,13 @@ def get_explorer_path():
     return GetWindowText(hwnd)
 
 def get_local_path(ftp_path,file):
-    p1=r'地址: ftp://(.*):(.*)\@6\.163\.193\.243(.*)'
-    ftp_info=match(p1,ftp_path).groups()
+    try:
+        p1=r'地址: ftp://(.*):(.*)\@6\.163\.193\.243(.*)'
+        ftp_info=match(p1,ftp_path).groups()
+    except:
+        p1 = r'地址: ftp://(.*)\@192\.168\.123\.99\:2121(.*)'
+        ftp_info=match(p1,ftp_path).groups()
+        ftp_info=(ftp_info[0],'123',ftp_info[1])
 ##    if ftp_info[2]=='':
 ##        ftp_info=ftp_info[0:2]+('.',)
     s_path=ftp_info[0]+ftp_info[2]
@@ -54,17 +58,6 @@ def get_local_path(ftp_path,file):
     makedirs(local_path,exist_ok=True)
     return local_path+file_name,ftp_info
 
-def compare_mtime(file,dest):
-    ftp_file=stat(file)
-    notify(str(ftp_file.st_size)+'\n'+str(ftp_file.st_file_attributes))
-    if isfile(dest):
-        local_file=stat(dest)
-        print(ftp_file,local_file)
-        if ftp_file.st_mtime == local_file.st_mtime:
-            popen('"%s"'%dest)
-            _exit(0)
-        if ftp_file.st_mtime >= local_file.st_mtime:
-            popen('DEL "%s"'%dest)
 def parse_CH(s):
     l=len(s)
     i=0
@@ -80,27 +73,14 @@ def parse_CH(s):
             i+=1
     return r
 
-def log_and_exit(message = None):
-    from time import ctime
-    from traceback import print_exc
-    from win32api import MessageBox
-    import win32con
-    if not message is None:
-        MessageBox(win32con.NULL, message, "Warning", win32con.MB_ICONEXCLAMATION)
-    with open('FTPlog.txt','a') as f:
-        f.write('\n'+'-'*20+ctime()+'-'*20+'\n')
-        print_exc(file=f)
-    print_exc()
-    _exit(1)
-    
-def main():
+@messager.log_it(file='log_handler.txt')
+def main(file=None):
+    if file is None:
+        file=sys.argv[1]
+
     dest,ftp_info=get_local_path(get_explorer_path(),file)
-    print(dest)
-    FTPDownloader.init('6.163.193.243',21,*ftp_info[0:2])
+    FTPDownloader.init(*ftp_info[0:2])
     FTPDownloader.download(*ftp_info[2:],dest=dest)
 
 if __name__=='__main__':
-    try:
-        main()
-    except Exception as e:
-        log_and_exit(str(e))
+    main()

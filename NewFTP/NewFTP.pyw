@@ -1,20 +1,22 @@
-from finder import find
+from .finder import find
 import pygame
 from pygame.locals import *
 from os import popen, environ, _exit
+import os.path
 from win32gui import FindWindow, SetWindowPos, PostMessage, GetCursorPos,\
      SetForegroundWindow, ShowWindow
-from win32api import MessageBox
-import direction
+#from win32api import MessageBox
+from . import direction
 import win32con
 import yaml
 from box import SBox as Box
+from . import messager
 
 
 class NameManager:
     def __init__(self,usr,pas_dict,perpage):
         self.acnts=tuple(usr.items())
-        self.pas_dict = {k:str(v) for k,v in pas_dict.items()}
+        self.pas_dict=pas_dict
         self.page = 0
         self.perpage = perpage
         self.maxpage = len(usr)//perpage
@@ -84,14 +86,14 @@ def load():
                 style = Box(yaml.load(f))
                 style.update(new_style)
     except FileNotFoundError:
-        MessageBox(win32con.NULL, "样式文件不可用！将使用默认样式","Warning", win32con.MB_ICONEXCLAMATION)
+        messager.warn( "样式文件不可用！将使用默认样式")
         with open('Styles/Win7.yaml', encoding='utf-8') as f:
             style = Box(yaml.load(f))
     style.maximum.width = style.maximum.cols*style.maximum.block.width
     style.maximum.height = style.maximum.rows*style.maximum.block.height
     mgr = NameManager(usr,pas,style.maximum.cols*style.maximum.rows-1)
     #print(usr,pas)
-    return mgr,style 
+    return mgr,style
 
 def draw_bg(style):
     BGSurf = pygame.surface.Surface((style.maximum.width,style.maximum.height))
@@ -115,24 +117,14 @@ def draw_bg(style):
                     style.minimum.height), style.minimum.border)
     return BGSurf, BGMSurf
 
-def log_and_exit(message = None):
-    from time import ctime
-    from traceback import print_exc
-    if not message is None:
-        MessageBox(win32con.NULL, message, "Warning", win32con.MB_ICONEXCLAMATION)
-    with open('log.txt','a') as f:
-        f.write('\n'+'-'*20+ctime()+'-'*20+'\n')
-        print_exc(file=f)
-    print_exc()
-    _exit(1)
-
+@messager.log_it(file = 'log_gui.txt')
 def main():
     global MINI
     find()
     try:
         mgr,style = load()
     except Exception:
-        log_and_exit("配置文件加载失败！")
+        messager.log_and_exit(message = "配置文件加载失败！")
     environ['SDL_VIDEO_WINDOW_POS']='%d,%d'%(style.maximum.pos.x,style.maximum.pos.y)
     DIS = pygame.display.set_mode((style.maximum.width,style.maximum.height), NOFRAME)
     MINI = False
@@ -263,7 +255,4 @@ def main():
 
         pygame.time.wait(50)
 if  __name__  == '__main__':
-    try:
-        main()
-    except Exception as e:
-        log_and_exit()
+    main()
