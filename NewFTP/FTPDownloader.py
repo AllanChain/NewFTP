@@ -4,7 +4,10 @@ import time
 from os import _exit,stat,utime,popen,system
 from os.path import isfile,dirname,abspath
 from tqdm import tqdm
-from . import messager
+try:
+    from . import messager
+except ImportError:
+    import messager
 
 class FileTracker():
     def __init__(self,filename,filesize=None):
@@ -63,16 +66,19 @@ def download(directory,filename,dest):
         if ftp_mtime >= local_file.st_mtime:
             popen('DEL "%s"'%dest)
     ftp_filesize=ftp.size(filename)
-    just_download(directory,filename,dest,ftp_mtime,ftp_filesize)
-    #if ftp_filesize < SILENT:
-        #just_download(directory,filename,dest,ftp_mtime,ftp_filesize)
-    #else:
-        #downloader = dirname(abspath(__file__))+'\\FTPDownloader.py'
-        #cmd='python %s %s %s "%s" "%s" "%s" %d %d'\
-             #%(downloader,USER,PASSWORD,directory,filename,dest,ftp_mtime,ftp_filesize)
+    #just_download(directory,filename,dest,ftp_mtime,ftp_filesize)
+    if ftp_filesize < SILENT:
+        just_download(directory,filename,dest,ftp_mtime,ftp_filesize)
+    else:
+        downloader = dirname(abspath(__file__))+'\\FTPDownloader.py'
+        cmd='python %s %s %s "%s" "%s" "%s" %d %d'\
+             %(downloader,USER,PASSWORD,directory,filename,dest,ftp_mtime,ftp_filesize)
+        # if you use -m NewFTP.FTPDownloader, python can't recognize the package
+        #cmd='python -m NewFTP.FTPDownloader %s %s "%s" "%s" "%s" %d %d & pause'\
+        #     %(USER,PASSWORD,directory,filename,dest,ftp_mtime,ftp_filesize)
         #cmd = 'python d:\\Desktop\\123.py'
         #messager.warn(cmd)
-        #system(cmd)
+        system(cmd)
 
 ftp = FTP()
 USER=''
