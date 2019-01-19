@@ -35,7 +35,7 @@ def register(command):
                        r'Software\Microsoft\Windows\Shell\Associations\UrlAssociations\ftp\UserChoice',
                        0,winreg.KEY_WRITE)
     winreg.SetValueEx(key, "Progid", 0, winreg.REG_SZ, "")
-    
+
 class CustomInstall(install):
     def run(self):
         from shutil import copytree
@@ -55,7 +55,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="NewFTP",
-    version="0.0.1",
+    version="0.0.2a0",
     author="AllanChain",
     author_email="txsmlf@gmail.com",
     description="A GUI program to login the FTP system and a background program to manage FTP file downloading",
