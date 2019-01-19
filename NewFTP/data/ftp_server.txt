@@ -1,2 +1,3 @@
-192.168.123.99:2121
-gbk
+server: 6.163.193.243:21
+encoding: gbk
+default_password: 123

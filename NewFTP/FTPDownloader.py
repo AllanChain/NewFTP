@@ -6,16 +6,17 @@ from os.path import isfile,dirname,abspath,splitext
 from tqdm import tqdm
 try:
     from . import messager
-    from .ftp_parser import HOST, PORT, ENCODING
+    from .ftp_parser import ENCODING
 except ImportError:
     import messager
-    from ftp_parser import HOST, PORT, ENCODING
+    from ftp_parser import ENCODING
 
 ftp = FTP()
 
 ftp.encoding = ENCODING
 USER=''
 PASSWORD=''
+HOST, PORT='',0
 SILENT=1024*800
 PRINTING=False
 ASK_FILE = '''检测到本地文件{0}，
@@ -42,9 +43,10 @@ class FileTracker():
         self.file.close()
         return self.open_it
 
-def init(user,password):
-    global USER,PASSWORD
+def init(server_info,user,password):
+    global USER,PASSWORD,HOST,PORT
     USER,PASSWORD=user,password
+    HOST,PORT=server_info
     ftp.connect(HOST,PORT)
     ftp.login(user,password)
 
@@ -121,8 +123,8 @@ def download(directory,filename,dest):
         just_download(directory,filename,dest,ftp_mtime,ftp_filesize)
     else:
         downloader = dirname(abspath(__file__))+'\\FTPDownloader.py'
-        cmd='python %s %s %s "%s" "%s" "%s" %d %d'\
-             %(downloader,USER,PASSWORD,directory,filename,dest,ftp_mtime,ftp_filesize)
+        cmd='python %s %s %d %s %s "%s" "%s" "%s" %d %d'\
+             %(downloader,HOST,PORT,USER,PASSWORD,directory,filename,dest,ftp_mtime,ftp_filesize)
         # if you use -m NewFTP.FTPDownloader, python can't recognize the package
         #cmd='python -m NewFTP.FTPDownloader %s %s "%s" "%s" "%s" %d %d & pause'\
         #     %(USER,PASSWORD,directory,filename,dest,ftp_mtime,ftp_filesize)
@@ -132,13 +134,13 @@ def download(directory,filename,dest):
 
 
 @messager.log_it(file = 'log_download.txt')
-def main(user,password,directory,filename,dest,ftp_mtime,ftp_filesize):
+def main(host,port,user,password,directory,filename,dest,ftp_mtime,ftp_filesize):
     global PRINTING
     from sys import argv
 
     PRINTING=True
 
-    init(user,password)
+    init((host,int(port)),user,password)
     ftp.cwd(directory)
     just_download(directory,filename,dest,int(ftp_mtime),int(ftp_filesize))
     ftp.close()
@@ -146,4 +148,5 @@ def main(user,password,directory,filename,dest,ftp_mtime,ftp_filesize):
 ##messager.warn(main)
 if __name__ == '__main__':
     from sys import argv
-    main(*argv[1:8])
+    print(argv)
+    main(*argv[1:10])

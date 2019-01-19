@@ -11,7 +11,7 @@ import win32con
 import yaml
 from box import SBox as Box
 from . import messager
-from .ftp_parser import SERVER
+from .ftp_parser import SERVER, DEFAULT_PASS
 
 
 class NameManager:
@@ -49,7 +49,7 @@ class NameManager:
             cmd = 'start explorer "%s"'%name
         elif name.isalpha() or name == '':
             #Ensure tha acnt is valid
-            name1 = name+':'+self.pas_dict.get(name,'123')+'@' if name else ''
+            name1 = name+':'+self.pas_dict.get(name,DEFAULT_PASS)+'@' if name else ''
             #If name is '', no :@ needed
             #here get(name,'123') means default password is '123'
             print (name1)
