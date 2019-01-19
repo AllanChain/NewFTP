@@ -25,8 +25,17 @@ def short_target(filename,dest,arg):
         shortcut.SetHotkey(114)
         persist_file.Save (shortcut_path, 0)
 
-
-
+def register(command):
+    import winreg
+    key=winreg.OpenKey(winreg.HKEY_CLASSES_ROOT,
+                           r'ftp\shell\open\command',
+                           0,winreg.KEY_WRITE)
+    winreg.SetValueEx(key, "", 0, winreg.REG_SZ, command)
+    key=winreg.OpenKey(winreg.HKEY_CURRENT_USER,
+                       r'Software\Microsoft\Windows\Shell\Associations\UrlAssociations\ftp\UserChoice',
+                       0,winreg.KEY_WRITE)
+    winreg.SetValueEx(key, "Progid", 0, winreg.REG_SZ, "")
+    
 class CustomInstall(install):
     def run(self):
         from shutil import copytree
@@ -36,8 +45,11 @@ class CustomInstall(install):
         if not isdir(expanduser('~/.NewFTP')):
             src = dirname(abspath(__file__))+'\\NewFTP\\data'
             copytree(src, expanduser('~/.NewFTP'))
-        short_target("FTP.lnk",split(executable)[0]+\
-                     '\\pythonw.exe','-m NewFTP.NewFTP')
+        short_target("FTP.lnk",'"%s\\pythonw.exe"'%split(executable)[0],
+                     '-m NewFTP.NewFTP')
+        register('"{0}\\pythonw.exe" -m NewFTP.PyFTPHandler "\%1"'\
+                 .format(split(executable)[0]))
+
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
