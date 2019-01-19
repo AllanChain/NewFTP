@@ -6,12 +6,14 @@ from os.path import isfile,dirname,abspath,splitext
 from tqdm import tqdm
 try:
     from . import messager
-    from .ftp_parser import HOST, PORT
+    from .ftp_parser import HOST, PORT, ENCODING
 except ImportError:
     import messager
-    from ftp_parser import HOST, PORT
+    from ftp_parser import HOST, PORT, ENCODING
 
 ftp = FTP()
+
+ftp.encoding = ENCODING
 USER=''
 PASSWORD=''
 SILENT=1024*800
@@ -45,7 +47,6 @@ def init(user,password):
     USER,PASSWORD=user,password
     ftp.connect(HOST,PORT)
     ftp.login(user,password)
-    ftp.encoding='gbk'
 
 def file_conflict(time,size):
     from win32api import MessageBox
@@ -80,7 +81,7 @@ def just_download(directory,filename,dest,ftp_mtime,ftp_filesize):
         system('title A simple downloader')
         print('This is a simple FTP downloader')
         print()
-        print('File to download:',directory+'/'+filename)
+        print('File to download:',directory+filename)
         print('Local file name:',dest)
         print()
         local_file=FileTracker(dest,ftp_filesize)
