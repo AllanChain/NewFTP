@@ -5,7 +5,6 @@ from os import popen, environ, _exit
 import os.path
 from win32gui import FindWindow, SetWindowPos, PostMessage, GetCursorPos,\
      SetForegroundWindow, ShowWindow
-#from win32api import MessageBox
 from . import direction
 import win32con
 import yaml
@@ -96,7 +95,6 @@ def load():
     style.maximum.width = style.maximum.cols*style.maximum.block.width
     style.maximum.height = style.maximum.rows*style.maximum.block.height
     mgr = NameManager(usr,pas,style.maximum.cols*style.maximum.rows-1)
-    #print(usr,pas)
     return mgr,style
 
 def draw_bg(style):

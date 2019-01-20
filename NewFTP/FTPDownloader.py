@@ -12,7 +12,6 @@ except ImportError:
     from ftp_parser import ENCODING, SILENT
 
 ftp = FTP()
-
 ftp.encoding = ENCODING
 PRINTING=False
 ASK_FILE = '''检测到本地文件{0}，
@@ -104,17 +103,12 @@ def download(directory,filename,dest):
     ftp_filesize=ftp.size(filename)
     if isfile(dest):
         local_file=stat(dest)
-        # messager.warn((local_file.st_mtime,ftp_mtime),(local_file.st_size,ftp_filesize))
         result = file_conflict((local_file.st_mtime,ftp_mtime),
                                (local_file.st_size,ftp_filesize))
         if result == 0:
             popen('explorer "%s"'%dest)
             ftp.close()
             _exit(0)
-        # if ftp_mtime == local_file.st_mtime:
-        # if ftp_mtime >= local_file.st_mtime:
-        #     popen('DEL "%s"'%dest)
-
     if ftp_filesize < SILENT:
         just_download(directory,filename,dest,ftp_mtime,ftp_filesize)
     else:
@@ -124,10 +118,8 @@ def download(directory,filename,dest):
         # if you use -m NewFTP.FTPDownloader, python can't recognize the package
         #cmd='python -m NewFTP.FTPDownloader %s %s "%s" "%s" "%s" %d %d & pause'\
         #     %(USER,PASSWORD,directory,filename,dest,ftp_mtime,ftp_filesize)
-        #messager.warn(cmd)
         system(cmd)
     ftp.close()
-
 
 @messager.log_it(file = 'log_download.txt')
 def main(host,port,user,password,directory,filename,dest,ftp_mtime,ftp_filesize):
@@ -135,13 +127,12 @@ def main(host,port,user,password,directory,filename,dest,ftp_mtime,ftp_filesize)
     from sys import argv
 
     PRINTING=True
-
     init((host,int(port)),user,password)
     ftp.cwd(directory)
     just_download(directory,filename,dest,int(ftp_mtime),int(ftp_filesize))
     ftp.close()
     time.sleep(0.5)
-##messager.warn(main)
+
 if __name__ == '__main__':
     from sys import argv
     print(argv)

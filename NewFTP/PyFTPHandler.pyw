@@ -13,7 +13,6 @@ with open('download_config.yaml','r',encoding='utf-8') as f:
 LOCAL_PREFIX=setting['LOCAL_PREFIX']
 
 
-##notify=lambda m: MessageBox(0, str(m), "Warning", 48)
 def get_explorer_path():
     hwnd = 0
     children = ('CabinetWClass','WorkerW','ReBarWindow32','Address Band Root',
