@@ -7,7 +7,7 @@ from win32gui import FindWindow, SetWindowPos, PostMessage, GetCursorPos,\
      SetForegroundWindow, ShowWindow
 import win32con
 import yaml
-from box import SBox as Box
+from box import SBox
 from . import messager
 from .ftp_parser import SERVER, DEFAULT_PASS
 
@@ -86,25 +86,25 @@ def load():
     try:
         with open('styles/' + sty['style'] + '.yaml',encoding='utf-8') as f:
     #Here store some attributes to access them conveniently
-            new_style = Box(yaml.load(f))
+            new_style = SBox(yaml.load(f))
         parents = [sty['style']]
         while 'parent' in new_style and not new_style['parent'] in parents:
             parents.append(new_style['parent'])
             with open('styles/%s.yaml'%new_style['parent'],encoding='utf-8') as f:
-                older_style = Box(yaml.load(f))
+                older_style = SBox(yaml.load(f))
                 new_style = older_style.update(new_style)
                 new_style = older_style
         if not 'Win7' in parents:
             with open('Styles/Win7.yaml', encoding='utf-8') as f:
                 # Using Win7 as ultimate parent
-                style = Box(yaml.load(f))
+                style = SBox(yaml.load(f))
                 style.update(new_style)
         else:
             style = new_style
     except FileNotFoundError:
         messager.warn( "样式文件不可用！将使用默认样式")
         with open('Styles/Win7.yaml', encoding='utf-8') as f:
-            style = Box(yaml.load(f))
+            style = SBox(yaml.load(f))
     style.maximum.width = style.maximum.cols*style.maximum.block.width
     style.maximum.height = style.maximum.rows*style.maximum.block.height
     mgr = NameManager(usr,pas,style.maximum.cols*style.maximum.rows-1)
