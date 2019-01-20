@@ -5,12 +5,11 @@ from os import popen, environ, _exit
 import os.path
 from win32gui import FindWindow, SetWindowPos, PostMessage, GetCursorPos,\
      SetForegroundWindow, ShowWindow
-#from win32api import MessageBox
-from . import direction
 import win32con
 import yaml
-from box import SBox as Box
+from box import SBox
 from . import messager
+from .ftp_parser import SERVER, DEFAULT_PASS
 
 
 class NameManager:
@@ -48,11 +47,11 @@ class NameManager:
             cmd = 'start explorer "%s"'%name
         elif name.isalpha() or name == '':
             #Ensure tha acnt is valid
-            name1 = name+':'+self.pas_dict.get(name,'123')+'@' if name else ''
+            name1 = name+':'+self.pas_dict.get(name,DEFAULT_PASS)+'@' if name else ''
             #If name is '', no :@ needed
             #here get(name,'123') means default password is '123'
             print (name1)
-            cmd = 'start explorer ftp://%s6.163.193.243'%name1
+            cmd = 'start explorer ftp://%s%s'%(name1,SERVER)
         popen(cmd)
 def C(color):
     '''Color converting'''
@@ -67,32 +66,48 @@ def C(color):
         if len(color) == 6:
             n = int(color, base=16)
             return (n>>16) % 256, (n>>8) % 256, n % 256
+
+def get_mouse_direction(start_pos,end_pos):
+    relx,rely=end_pos[0]-start_pos[0],end_pos[1]-start_pos[1]
+    if relx**2+rely**2>20:
+        if abs(relx)>2*abs(rely):
+            gox=int(relx/abs(relx))
+            goy=0
+        elif abs(rely)>2*abs(relx):
+            goy=int(rely/abs(rely))
+            gox=0
+        else:return 0,0
+        return gox,goy
+    return 0,0
+
 def load():
-    with open('config.yaml','r',encoding='utf-8') as f:
+    with open('gui_config.yaml','r',encoding='utf-8') as f:
         usr,pas,sty = yaml.load_all(f)
     try:
         with open('styles/' + sty['style'] + '.yaml',encoding='utf-8') as f:
     #Here store some attributes to access them conveniently
-            new_style = Box(yaml.load(f))
+            new_style = SBox(yaml.load(f))
         parents = [sty['style']]
-        while 'parent' in sty and not sty['parent'] in parents:
-            parents.append(sty['parent'])
-            with open('styles/%s.yaml'%sty['parent'],encoding='utf-8') as f:
-                older_style = Box(yaml.load(f))
+        while 'parent' in new_style and not new_style['parent'] in parents:
+            parents.append(new_style['parent'])
+            with open('styles/%s.yaml'%new_style['parent'],encoding='utf-8') as f:
+                older_style = SBox(yaml.load(f))
                 new_style = older_style.update(new_style)
+                new_style = older_style
         if not 'Win7' in parents:
             with open('Styles/Win7.yaml', encoding='utf-8') as f:
                 # Using Win7 as ultimate parent
-                style = Box(yaml.load(f))
+                style = SBox(yaml.load(f))
                 style.update(new_style)
+        else:
+            style = new_style
     except FileNotFoundError:
         messager.warn( "样式文件不可用！将使用默认样式")
         with open('Styles/Win7.yaml', encoding='utf-8') as f:
-            style = Box(yaml.load(f))
+            style = SBox(yaml.load(f))
     style.maximum.width = style.maximum.cols*style.maximum.block.width
     style.maximum.height = style.maximum.rows*style.maximum.block.height
     mgr = NameManager(usr,pas,style.maximum.cols*style.maximum.rows-1)
-    #print(usr,pas)
     return mgr,style
 
 def draw_bg(style):
@@ -188,7 +203,7 @@ def main():
                 elif event.type == MOUSEBUTTONUP:
                     if event.button == 1:
                         x0, y0 = event.pos
-                        x, y = direction.get_mouse_direction(start_pos, event.pos)
+                        x, y = get_mouse_direction(start_pos, event.pos)
                         if y == 1 or y == -1:
                             mgr.pageturn(-y)
                             draw_text()
