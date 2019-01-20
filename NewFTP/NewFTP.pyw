@@ -5,7 +5,6 @@ from os import popen, environ, _exit
 import os.path
 from win32gui import FindWindow, SetWindowPos, PostMessage, GetCursorPos,\
      SetForegroundWindow, ShowWindow
-from . import direction
 import win32con
 import yaml
 from box import SBox as Box
@@ -67,6 +66,20 @@ def C(color):
         if len(color) == 6:
             n = int(color, base=16)
             return (n>>16) % 256, (n>>8) % 256, n % 256
+
+def get_mouse_direction(start_pos,end_pos):
+    relx,rely=end_pos[0]-start_pos[0],end_pos[1]-start_pos[1]
+    if relx**2+rely**2>20:
+        if abs(relx)>2*abs(rely):
+            gox=int(relx/abs(relx))
+            goy=0
+        elif abs(rely)>2*abs(relx):
+            goy=int(rely/abs(rely))
+            gox=0
+        else:return 0,0
+        return gox,goy
+    return 0,0
+
 def load():
     with open('gui_config.yaml','r',encoding='utf-8') as f:
         usr,pas,sty = yaml.load_all(f)
@@ -190,7 +203,7 @@ def main():
                 elif event.type == MOUSEBUTTONUP:
                     if event.button == 1:
                         x0, y0 = event.pos
-                        x, y = direction.get_mouse_direction(start_pos, event.pos)
+                        x, y = get_mouse_direction(start_pos, event.pos)
                         if y == 1 or y == -1:
                             mgr.pageturn(-y)
                             draw_text()
