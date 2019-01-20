@@ -25,12 +25,12 @@ ASK_FILE = '''检测到本地文件{0}，
 Local file already exist.
 Copy any way?
 '''
-
+STREAMS = ('.mp4','.mp3','.flv','.avi','.wmv','.rmvb')
 class FileTracker():
     def __init__(self,filename,filesize=None):
         self.file=open(filename,'wb')
         self.open_it=None
-        if splitext(filename)[1] in ('.mp4','.mp3'):
+        if splitext(filename)[1].lower() in STREAMS:
             popen('explorer "%s"'%filename)
             self.open_it=False
         self.filesize=filesize
@@ -39,7 +39,7 @@ class FileTracker():
     def write(self,buff):
         self.pbar.update(len(buff))
         self.file.write(buff)
-    def  close(self):
+    def close(self):
         self.file.close()
         return self.open_it
 
