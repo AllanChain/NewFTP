@@ -1,6 +1,8 @@
 import win32con
 from win32gui import FindWindow, PostMessage, SetForegroundWindow
 from os import _exit
+
+
 def find():
     hwnd = FindWindow(None,'oh-my-ftp')
     if hwnd:

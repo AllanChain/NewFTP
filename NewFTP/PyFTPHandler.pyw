@@ -3,10 +3,11 @@ from win32gui import FindWindowEx, GetWindowText
 from os import popen,makedirs,stat,_exit
 from os.path import isfile
 from re import match
+import yaml
 from . import FTPDownloader
 from . import messager
 from .ftp_parser import DEFAULT_PASS, get_host_port
-import yaml
+
 
 with open('download_config.yaml','r',encoding='utf-8') as f:
     rules,setting=yaml.load_all(f)
