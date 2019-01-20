@@ -14,9 +14,6 @@ except ImportError:
 ftp = FTP()
 
 ftp.encoding = ENCODING
-USER=''
-PASSWORD=''
-HOST, PORT='',0
 PRINTING=False
 ASK_FILE = '''检测到本地文件{0}，
 是否覆盖？
