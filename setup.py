@@ -55,7 +55,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="NewFTP",
-    version="0.0.2a0",
+    version="0.0.2a1",
     author="AllanChain",
     author_email="txsmlf@gmail.com",
     description="A GUI program to login the FTP system and a background program to manage FTP file downloading",
