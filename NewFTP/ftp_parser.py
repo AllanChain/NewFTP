@@ -10,3 +10,4 @@ with open('ftp_server.yaml','r',encoding='utf-8') as f:
 SERVER = COMPLETE_SERVER = consts['server']
 ENCODING = consts['encoding']
 DEFAULT_PASS = str(consts['default_password'])
+SILENT = consts['silent']
