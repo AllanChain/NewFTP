@@ -32,6 +32,7 @@ Not onlyvdo we offer `config.yaml` and `Styles/*.yaml` to edit its behavior and 
 5. Double click the link, and after two seconds or so, a blue window will be there on the left side of the screen, displaying the default teachers and blank one. Click one to log in and show the content via explorer. And the window will be minimized on the left side but somewhat upper.
 6.  Click the mini window or double click the link you created to maximize the window.
 7.  Dive into the directory `~/.NewFTP`, open `gui_config.yaml` with your favorite text editor (or simply notepad) and edit the first chunk from `---` to `...`. Especially note that the colon must be followed by space.
+7. Edit `ftp_server.yaml` to config your FTP server.
 8.  Save and close it. Right click at the mini window to quit, and double click the link to restart. If no message box or nothing happened, you're supposed to have an FTP shortcut just for you. If something bad DOES happen, check your `gui_config.yaml` and `log_*.txt`.
 
 ### Controlling
@@ -84,9 +85,26 @@ To take over the FTP file transfer when double click the file.
 
 ## TO DO
 #### Black Magic
-- ~~Dragging out the files newly uploaded from main window to the desktop. (this might be quite hard)~~
-- ~~or an IExplorerBrowser application with ICommDlgBrowser to hack open file event. (This may require C++ program)~~
-- Find the better way to register PyFTPHandler.
+- Important Ones
+  - Find the better way to register PyFTPHandler.(current implementation is somewhat tricky)
+  - Test on the 32 bit Win7, which seems different from the 64 bit ones.
+    - if the 32 bit Win7 does not provide password in the address bar, read the config file to get it.
+  - Support mixed underscores and spaces in the file name. (Win7 replaced spaces with underscores)
+  - Maintainers please!
+- Less Important Ones
+  - Add action config of the gui program:
+    - HideOnMini
+    - MiniDelayOnFocusLoss
+    - OnAltF4
+    - MiniAfterLogin
+  - Support regex match with file name included.
+  - Support break points for big file downloading.
+  - Trace the opened file, if modified, ask if upload.
+  - If local file is newer, ask upload.
+  - Add title bar to the gui program to display custom information, such as:
+    - CEE days
+    - Class Status
+  - The `__main__.py` CLI.
 
 #### Good-looking Themes
 It is obvious that we are using Microsoft Windows7 theme. What if Linux theme or other awesome software, organizations?
