@@ -68,10 +68,12 @@ def parse_CH(s):
     r=''
     while i<l:
         if s[i] == '%':
-            hexnum=s[i+1:i+3]+s[i+4:i+6]
-            print(hexnum)
+            hexnum = s[i+1:i+3]
+            while s[i+3] == '%':
+                i+=3
+                hexnum+=s[i+1:i+3]
+            i+=3
             r+=bytes.fromhex(hexnum).decode('gbk')
-            i+=6
         else:
             r+=s[i]
             i+=1
