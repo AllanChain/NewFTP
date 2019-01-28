@@ -64,7 +64,7 @@ def get_local_path(ftp_path,file):
                 local_path+=v+'\\'+match_path
             except Exception:
                 local_path+=v
-    local_path=local_path.replace('/','\\')
+    local_path=local_path.replace('/','\\').replace('\\\\','\\')
     print(local_path,type(local_path))
     makedirs(local_path,exist_ok=True)
     return local_path+file_name,ftp_info,server_info
