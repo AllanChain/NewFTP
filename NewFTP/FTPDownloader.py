@@ -91,10 +91,12 @@ def just_download(directory,filename,dest,ftp_mtime,ftp_filesize):
 
 def download(directory,filename,dest):
     ftp.cwd(directory)
+    filename=filename.replace(' ','_')
     try:
         L=ftp.sendcmd('MDTM %s'%filename)
     except error_perm:
-        filename=filename.replace(' ','_')
+        from difflib import get_close_matches
+        filename=get_close_matches(filename,ftp.nlst())[0]
         L=ftp.sendcmd('MDTM %s'%filename)
     dir_t=L[4:8]+'-'+L[8:10]+'-'+L[10:12]+' '+L[12:14]+':'+L[14:16]+':'+L[16:18]
     timeArray = time.strptime(dir_t, "%Y-%m-%d %H:%M:%S")
