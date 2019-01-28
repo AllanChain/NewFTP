@@ -47,7 +47,8 @@ class NameManager:
             cmd = 'start explorer "%s"'%name
         elif name.isalpha() or name == '':
             #Ensure tha acnt is valid
-            name1 = name+':'+self.pas_dict.get(name,DEFAULT_PASS)+'@' if name else ''
+            name1 = name+':'+str(self.pas_dict.get(name,DEFAULT_PASS))\
+                    +'@' if name else ''
             #If name is '', no :@ needed
             #here get(name,'123') means default password is '123'
             print (name1)
