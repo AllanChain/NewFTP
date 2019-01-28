@@ -81,6 +81,21 @@ To take over the FTP file transfer when double click the file.
 ### Quick Start
 - pip install as said above
 - In the directory `/.NewFTP`, edit 'ftp_server.txt' to config your FTP server; edit `download_config.yaml` to config your download directory.
+> Note: if you wrote
+```yaml
+物理: zxs
+```
+in your 'gui_config.yaml', the by default, the handler translate it into
+```yaml
+'zxs/(.*)': '物理'
+```
+as part of 'download_config.yaml', and there is no need to write it again. But you can override this by writing something like:
+```yaml
+'zxs/(.*)': '我爱物理'
+'zxs/(.*)': ''
+```
+You could see more example in the default configuration.
+
 - Then, when you double click the file in the explorer ftp window, the handler will automaticly copy the file to the specified directory, and open with default application.
 
 ## TO DO
