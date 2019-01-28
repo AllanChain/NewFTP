@@ -104,7 +104,7 @@ You could see more example in the default configuration.
   - Find the better way to register PyFTPHandler.(current implementation is somewhat tricky)
   - Test on the 32 bit Win7, which seems different from the 64 bit ones.
     - if the 32 bit Win7 does not provide password in the address bar, read the config file to get it.
-  - Support mixed underscores and spaces in the file name. (Win7 replaced spaces with underscores)
+  - ~~Support mixed underscores and spaces in the file name. (Win7 replaced spaces with underscores)~~ **Done with the help of `difflib`**
   - Maintainers please!
 - Less Important Ones
   - Add action config of the gui program:
