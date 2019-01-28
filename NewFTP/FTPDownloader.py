@@ -1,5 +1,4 @@
 from ftplib import FTP,error_perm
-from sys import stdout
 import time
 from os import _exit,stat,utime,popen,system
 from os.path import isfile,dirname,abspath,splitext
