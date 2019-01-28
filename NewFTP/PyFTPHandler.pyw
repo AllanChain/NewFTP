@@ -3,16 +3,23 @@ from win32gui import FindWindowEx, GetWindowText
 from os import popen,makedirs,stat,_exit
 from os.path import isfile
 from re import match
-import yaml
+from yaml import load_all
 from . import FTPDownloader
 from . import messager
 from .ftp_parser import DEFAULT_PASS, get_host_port
 
 
-with open('download_config.yaml','r',encoding='utf-8') as f:
-    rules,setting=yaml.load_all(f)
-LOCAL_PREFIX=setting['LOCAL_PREFIX']
-
+def load_setting():
+    with open('download_config.yaml','r',encoding='utf-8') as f:
+        specials,setting = load_all(f)
+    with open('gui_config.yaml','r',encoding ='utf-8') as f:
+        users = list(load_all(f))[0]
+    d = {}
+    for k,v in users.items():
+        if v.isalpha():
+            d[v+r'/(.*)'] = k
+    d.update(specials)
+    return setting['LOCAL_PREFIX'], d
 
 def get_explorer_path():
     hwnd = 0
@@ -48,7 +55,7 @@ def get_local_path(ftp_path,file):
     file_name=file_name.replace('_',' ')
     ftp_info+=(file_name,)
     # ftp_info (user,password,dir,filename)
-    local_path=LOCAL_PREFIX
+    local_path,rules=load_setting()
     for k, v in rules.items():
         result=match(k,s_path)
         if not result is None:
@@ -83,7 +90,6 @@ def parse_CH(s):
 def main(file=None):
     if file is None:
         file=sys.argv[1]
-
     dest,ftp_info,server_info=get_local_path(get_explorer_path(),file)
     FTPDownloader.init(server_info,*ftp_info[0:2])
     FTPDownloader.download(*ftp_info[2:],dest=dest)
