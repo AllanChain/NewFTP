@@ -4,10 +4,10 @@ from os import _exit
 
 
 def find():
-    hwnd = FindWindow(None,'oh-my-ftp')
+    hwnd = FindWindow(None, 'oh-my-ftp')
     if hwnd:
-        PostMessage(hwnd, win32con.WM_LBUTTONDOWN, 0,(1<<16)+1)
-        PostMessage(hwnd, win32con.WM_LBUTTONUP, 0,(1<<16)+1)
+        PostMessage(hwnd, win32con.WM_LBUTTONDOWN, 0, (1 << 16)+1)
+        PostMessage(hwnd, win32con.WM_LBUTTONUP, 0, (1 << 16)+1)
         try:
             SetForegroundWindow(hwnd)
         except:
@@ -17,4 +17,6 @@ def find():
             pass
         _exit(0)
     return
+
+
 find()
