@@ -1,7 +1,6 @@
 import sys
 from win32gui import FindWindowEx, GetWindowText
-from os import popen, makedirs, stat, _exit
-from os.path import isfile
+from os import makedir
 from re import match
 from yaml import load_all
 from . import FTPDownloader

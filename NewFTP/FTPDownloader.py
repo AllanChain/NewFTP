@@ -138,7 +138,6 @@ def download(directory, filename, dest):
 @messager.log_it(file='log_download.txt')
 def main(host, port, user, password, directory, filename, dest, ftp_mtime, ftp_filesize):
     global PRINTING
-    from sys import argv
 
     PRINTING = True
     init((host, int(port)), user, password)

@@ -1,40 +1,42 @@
 import setuptools
 from setuptools.command.install import install
 
-def short_target(filename,dest,arg):
-    import os, sys
+
+def short_target(filename, dest, arg):
+    import os
     import pythoncom
     from win32com.shell import shell, shellcon
 
-
-    desktop_path = shell.SHGetFolderPath (0, shellcon.CSIDL_DESKTOP, 0, 0)
-    shortcut_path = os.path.join (desktop_path, filename)
+    desktop_path = shell.SHGetFolderPath(0, shellcon.CSIDL_DESKTOP, 0, 0)
+    shortcut_path = os.path.join(desktop_path, filename)
     if not os.path.exists(shortcut_path):
-        shortcut = pythoncom.CoCreateInstance (
+        shortcut = pythoncom.CoCreateInstance(
             shell.CLSID_ShellLink,
             None,
             pythoncom.CLSCTX_INPROC_SERVER,
             shell.IID_IShellLink
         )
-        with open (shortcut_path,'w'):
+        with open(shortcut_path, 'w'):
             pass
-        persist_file = shortcut.QueryInterface (pythoncom.IID_IPersistFile)
-        persist_file.Load (shortcut_path)
+        persist_file = shortcut.QueryInterface(pythoncom.IID_IPersistFile)
+        persist_file.Load(shortcut_path)
         shortcut.SetPath(dest)
         shortcut.SetArguments(arg)
         shortcut.SetHotkey(114)
-        persist_file.Save (shortcut_path, 0)
+        persist_file.Save(shortcut_path, 0)
+
 
 def register(command):
     import winreg
-    key=winreg.OpenKey(winreg.HKEY_CLASSES_ROOT,
-                           r'ftp\shell\open\command',
-                           0,winreg.KEY_WRITE)
+    key = winreg.OpenKey(winreg.HKEY_CLASSES_ROOT,
+                         r'ftp\shell\open\command',
+                         0, winreg.KEY_WRITE)
     winreg.SetValueEx(key, "", 0, winreg.REG_SZ, command)
-    key=winreg.OpenKey(winreg.HKEY_CURRENT_USER,
-                       r'Software\Microsoft\Windows\Shell\Associations\UrlAssociations\ftp\UserChoice',
-                       0,winreg.KEY_WRITE)
+    key = winreg.OpenKey(winreg.HKEY_CURRENT_USER,
+                         r'Software\Microsoft\Windows\Shell\Associations\UrlAssociations\ftp\UserChoice',
+                         0, winreg.KEY_WRITE)
     winreg.SetValueEx(key, "Progid", 0, winreg.REG_SZ, "")
+
 
 class CustomInstall(install):
     def run(self):
@@ -45,10 +47,11 @@ class CustomInstall(install):
         if not isdir(expanduser('~/.NewFTP')):
             src = dirname(abspath(__file__))+'\\NewFTP\\data'
             copytree(src, expanduser('~/.NewFTP'))
-        short_target("FTP.lnk",'"%s\\pythonw.exe"'%split(executable)[0],
+        short_target("FTP.lnk", '"%s\\pythonw.exe"' % split(executable)[0],
                      '-m NewFTP.NewFTP')
-        register('"{0}\\pythonw.exe" -m NewFTP.PyFTPHandler "\%1"'\
+        register('"{0}\\pythonw.exe" -m NewFTP.PyFTPHandler "\%1"'
                  .format(split(executable)[0]))
+
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -64,8 +67,8 @@ setuptools.setup(
     url="https://github.com/AllanChain/NewFTP",
     packages=setuptools.find_packages(),
     package_data={
-        '':['*.pyw','data/*','data/Styles/*','data/Styles/Img/*']},
-    install_requires=["PyYAML","python-box","pygame","tqdm","pywin32"],
+        '': ['*.pyw', 'data/*', 'data/Styles/*', 'data/Styles/Img/*']},
+    install_requires=["PyYAML", "python-box", "pygame", "tqdm", "pywin32"],
     cmdclass={'install': CustomInstall},
     classifiers=[
         "Programming Language :: Python :: 3",

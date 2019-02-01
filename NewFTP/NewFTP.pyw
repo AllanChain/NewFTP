@@ -1,10 +1,8 @@
 from .finder import find
 import pygame
 from pygame.locals import *
-from os import popen, environ, _exit
-import os.path
-from win32gui import FindWindow, SetWindowPos, PostMessage, GetCursorPos,\
-    SetForegroundWindow, ShowWindow
+from os import popen, environ
+from win32gui import FindWindow, SetWindowPos, GetCursorPos, ShowWindow
 import win32con
 import yaml
 from box import SBox

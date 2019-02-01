@@ -1,6 +1,5 @@
 from sys import argv
-from os import system, popen, chdir
-import os.path
+from os import system
 from . import messager
 
 
