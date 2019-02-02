@@ -1,8 +1,8 @@
 import sys
-from win32gui import FindWindowEx, GetWindowText
 from os import makedirs
 from re import match
 from yaml import load_all
+from win32gui import FindWindowEx, GetWindowText
 from . import FTPDownloader
 from . import messager
 from .ftp_parser import DEFAULT_PASS, get_host_port
