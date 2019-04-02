@@ -7,7 +7,7 @@ import win32con
 import yaml
 from box import SBox
 from . import messager
-from .ftp_parser import SERVER, DEFAULT_PASS
+from .setting import SERVER, DEFAULT_PASS
 
 
 class NameManager:
@@ -90,13 +90,14 @@ def get_mouse_direction(start_pos, end_pos):
 
 
 def load():
+    from .setting import USERS, PASSWORDS, STYLE
     with open('gui_config.yaml', 'r', encoding='utf-8') as f:
         usr, pas, sty = yaml.load_all(f)
     try:
-        with open('styles/' + sty['style'] + '.yaml', encoding='utf-8') as f:
+        with open('styles/' + STYLE + '.yaml', encoding='utf-8') as f:
             # Here store some attributes to access them conveniently
             new_style = SBox(yaml.load(f))
-        parents = [sty['style']]
+        parents = [STYLE]
         while 'parent' in new_style and not new_style['parent'] in parents:
             parents.append(new_style['parent'])
             with open('styles/%s.yaml' % new_style['parent'], encoding='utf-8') as f:
@@ -116,7 +117,7 @@ def load():
             style = SBox(yaml.load(f))
     style.maximum.width = style.maximum.cols*style.maximum.block.width
     style.maximum.height = style.maximum.rows*style.maximum.block.height
-    mgr = NameManager(usr, pas, style.maximum.cols*style.maximum.rows-1)
+    mgr = NameManager(USERS, PASSWORDS, style.maximum.cols*style.maximum.rows-1)
     return mgr, style
 
 

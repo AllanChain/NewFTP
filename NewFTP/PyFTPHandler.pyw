@@ -3,22 +3,18 @@ from win32gui import FindWindowEx, GetWindowText
 from os import popen, makedirs, stat, _exit
 from os.path import isfile, split
 from re import match
-from yaml import load_all
 from . import FTPDownloader
 from . import messager
-from .ftp_parser import DEFAULT_PASS, get_host_port
+from .setting import DEFAULT_PASS, get_host_port
 
 
 def load_setting():
-    with open('download_config.yaml', 'r', encoding='utf-8') as f:
-        specials, setting = load_all(f)
-    with open('gui_config.yaml', 'r', encoding='utf-8') as f:
-        users = list(load_all(f))[0]
+    from .setting import specials, LOCAL_PREFIX, USERS
     d = [(k, v) for k, v in specials.items()]
-    for k, v in users.items():
+    for k, v in USERS.items():
         if v.isalpha():
             d.append((v+r'/(.*)', k))
-    return setting['LOCAL_PREFIX'], d
+    return LOCAL_PREFIX, d
 
 
 def get_explorer_path():

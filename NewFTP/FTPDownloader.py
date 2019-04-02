@@ -5,10 +5,10 @@ from os.path import isfile, dirname, abspath, splitext
 from tqdm import tqdm
 try:
     from . import messager
-    from .ftp_parser import ENCODING, SILENT
+    from .setting import ENCODING, SILENT
 except ImportError:
     import messager
-    from ftp_parser import ENCODING, SILENT
+    from setting import ENCODING, SILENT
 
 ftp = FTP()
 ftp.encoding = ENCODING
