@@ -91,8 +91,6 @@ def get_mouse_direction(start_pos, end_pos):
 
 def load():
     from .setting import USERS, PASSWORDS, STYLE
-    with open('gui_config.yaml', 'r', encoding='utf-8') as f:
-        usr, pas, sty = yaml.load_all(f)
     try:
         with open('styles/' + STYLE + '.yaml', encoding='utf-8') as f:
             # Here store some attributes to access them conveniently
