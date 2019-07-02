@@ -29,13 +29,17 @@ def short_target(filename, dest, arg):
 def register(command):
     import winreg
     key = winreg.OpenKey(winreg.HKEY_CLASSES_ROOT,
-                         r'ftp\shell\open\command',
+                         'ftp\\shell\\open\\command',
                          0, winreg.KEY_WRITE)
     winreg.SetValueEx(key, "", 0, winreg.REG_SZ, command)
-    key = winreg.OpenKey(winreg.HKEY_CURRENT_USER,
-                         r'Software\Microsoft\Windows\Shell\Associations\UrlAssociations\ftp\UserChoice',
-                         0, winreg.KEY_WRITE)
-    winreg.SetValueEx(key, "Progid", 0, winreg.REG_SZ, "")
+    try:
+        key = winreg.OpenKey(winreg.HKEY_CURRENT_USER,
+                             'Software\\Microsoft\\Windows\\Shell\\Associations'
+                             '\\UrlAssociations\\ftp\\UserChoice',
+                             0, winreg.KEY_WRITE)
+        winreg.SetValueEx(key, "Progid", 0, winreg.REG_SZ, "")
+    except FileNotFoundError:
+        pass
 
 
 class CustomInstall(install):
