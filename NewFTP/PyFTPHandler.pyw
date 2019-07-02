@@ -13,11 +13,10 @@ def load_setting():
         specials, setting = load_all(f)
     with open('gui_config.yaml', 'r', encoding='utf-8') as f:
         users = list(load_all(f))[0]
-    d = {}
+    d = [(k, v) for k, v in specials.items()]
     for k, v in users.items():
         if v.isalpha():
-            d[v+r'/(.*)'] = k
-    d.update(specials)
+            d.append((v+r'/(.*)', k))
     return setting['LOCAL_PREFIX'], d
 
 
@@ -58,18 +57,19 @@ def get_local_path(ftp_path, file):
     ftp_info += (file_name,)
     # ftp_info (user,password,dir,filename)
     local_path, rules = load_setting()
-    for k, v in rules.items():
-        result = match(k, s_path)
+    for k, v in rules:
+        result = match(k, s_path+file_name)
         if not result is None:
             try:
                 match_path = parse_CH(result.group(1))
                 local_path += v+'\\'+match_path
+                break
             except Exception:
                 local_path += v
     local_path = local_path.replace('/', '\\').replace('\\\\', '\\')
     print(local_path, type(local_path))
-    makedirs(local_path, exist_ok=True)
-    return local_path+file_name, ftp_info, server_info
+    makedirs(split(local_path)[0], exist_ok=True)
+    return local_path, ftp_info, server_info
 
 
 def parse_CH(s):
