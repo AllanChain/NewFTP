@@ -22,18 +22,18 @@ Perfectly solved the server breaking down problem as former distributions do.
 #### Script language
 It means once python and some packages are installed, only KBs or a few MBs for brand new features and programs.
 #### Changable whenever you want
-Not onlyvdo we offer `config.yaml` and `Styles/*.yaml` to edit its behavior and looking,  those who also love python can also edit the source file and PR via github.
+Not onlyvdo we offer `config.py` and `Styles/*.yaml` to edit its behavior and looking,  those who also love python can also edit the source file and PR via github.
 
 ## NewFTP GUI
 ### Quick Start
 1. install python 3.X. (check `add python to PATH`)
 > 3.6+ if you want keep dict in order.
 2. run `pip install NewFTP`
-5. Double click the link, and after two seconds or so, a blue window will be there on the left side of the screen, displaying the default teachers and blank one. Click one to log in and show the content via explorer. And the window will be minimized on the left side but somewhat upper.
-6.  Click the mini window or double click the link you created to maximize the window.
-7.  Dive into the directory `~/.NewFTP`, open `gui_config.yaml` with your favorite text editor (or simply notepad) and edit the first chunk from `---` to `...`. Especially note that the colon must be followed by space.
-7. Edit `ftp_server.yaml` to config your FTP server.
-8.  Save and close it. Right click at the mini window to quit, and double click the link to restart. If no message box or nothing happened, you're supposed to have an FTP shortcut just for you. If something bad DOES happen, check your `gui_config.yaml` and `log_*.txt`.
+5. Double click the link (automatically generated when installing), and after two seconds or so, a blue window will be there on the left side of the screen, displaying the default teachers and blank one. Click one to log in and show the content via explorer. And the window will be minimized on the left side but somewhat upper.
+6.  Click the mini window or double click the link to maximize the window.
+7.  Dive into the directory `~/.NewFTP`, open `config.py` with your favorite text editor (or simply notepad) and edit the `USERS` and `PASSWORDS` dictionary.
+7. Edit `SERVER` and `ENCODING` variabale to config your FTP server.
+8.  Save and close it. Right click at the mini window to quit, and double click the link to restart. If no message box or nothing happened, you're supposed to have an FTP shortcut just for you. If something bad DOES happen, check your `config.py` and `log_*.txt`.
 
 ### Controlling
 #### Touch control
@@ -55,14 +55,14 @@ Not onlyvdo we offer `config.yaml` and `Styles/*.yaml` to edit its behavior and 
 - I think you know it
 
 ### Advanced Usage
-All the examples here are included in the default `gui_config.yaml`.
+All the examples here are included in the default `config.py`.
 
 - Run Command From It
 > Replace the user name (e.g. `zxs`) with command you want starting with a dollar sign. (`$`)
 - Open local directory or file from it
 > Replace the user name with directory or file you want
 - A teacher with an abnormal combinations
-> Edit the second chunk of `gui_config.yaml`.
+> Edit the second chunk of `config.py`.
 
 ### Why minimized floating window
 As you know, python is a language for the 21st century,
@@ -80,16 +80,16 @@ To take over the FTP file transfer when double click the file.
 
 ### Quick Start
 - pip install as said above
-- In the directory `/.NewFTP`, edit 'ftp_server.txt' to config your FTP server; edit `download_config.yaml` to config your download directory.
+- In the directory `/.NewFTP`, edit 'config.py' to config your FTP server and your download directory.
 > Note: if you wrote
 ```yaml
-物理: zxs
+'物理': 'zxs'
 ```
-in your 'gui_config.yaml', the by default, the handler translate it into
+in your 'config.py', the by default, the handler translate it into
 ```yaml
 'zxs/(.*)': '物理'
 ```
-as part of 'download_config.yaml', and there is no need to write it again. But you can override this by writing something like:
+as part of download rules, and there is no need to write it again. But you can override this by writing something like:
 ```yaml
 'zxs/(.*)': '我爱物理'
 'zxs/(.*)': ''
