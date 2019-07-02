@@ -2,6 +2,7 @@ from ftplib import FTP, error_perm
 import time
 from os import _exit, stat, utime, popen, system
 from os.path import isfile, dirname, abspath, splitext
+from dateutil.parser import parse as timeparse
 from tqdm import tqdm
 try:
     from . import messager
@@ -102,17 +103,8 @@ def just_download(directory, filename, dest, ftp_mtime, ftp_filesize):
 
 def download(directory, filename, dest):
     ftp.cwd(directory)
-    filename = filename.replace(' ', '_')
-    try:
-        L = ftp.sendcmd('MDTM %s' % filename)
-    except error_perm:
-        from difflib import get_close_matches
-        filename = get_close_matches(filename, ftp.nlst())[0]
-        L = ftp.sendcmd('MDTM %s' % filename)
-    dir_t = L[4:8]+'-'+L[8:10]+'-'+L[10:12] + \
-        ' '+L[12:14]+':'+L[14:16]+':'+L[16:18]
-    timeArray = time.strptime(dir_t, "%Y-%m-%d %H:%M:%S")
-    ftp_mtime = int(time.mktime(timeArray))
+    response = ftp.sendcmd('MDTM %s' % filename)
+    ftp_mtime = timeparse(response.split(' ')[-1][:14]).timestamp()
     ftp_filesize = ftp.size(filename)
     if isfile(dest):
         local_file = stat(dest)
