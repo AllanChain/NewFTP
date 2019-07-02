@@ -1,10 +1,10 @@
 import sys
 from os import makedirs
+from os.path import split
 from re import match
-from yaml import load_all
-from win32gui import FindWindowEx, GetWindowText
-from . import FTPDownloader
-from . import messager
+from collections import namedtuple
+
+from . import FTPDownloader, messager
 from .setting import DEFAULT_PASS, get_host_port
 
 
@@ -17,58 +17,33 @@ def load_setting():
     return LOCAL_PREFIX, d
 
 
-def get_explorer_path():
-    hwnd = 0
-    children = ('CabinetWClass', 'WorkerW', 'ReBarWindow32', 'Address Band Root',
-                'msctls_progress32', 'Breadcrumb Parent', 'ToolbarWindow32')
-    for child_class in children:
-        hwnd = FindWindowEx(hwnd, 0, child_class, None)
-    return GetWindowText(hwnd)
-
-
-def get_ftp_info(ftp_path):
-    server = match('地址: ftp://.*\@(.*?)/', ftp_path).group(1)
-    server_re = server.replace('.', r'\.').replace(':', r'\:')
-    try:
-        p1 = r'地址: ftp://(.*):(.*)\@%s(.*)' % server_re
-        ftp_info = match(p1, ftp_path).groups()
-    except:
-        p1 = r'地址: ftp://(.*)\@%s(.*)' % server_re
-        ftp_info = match(p1, ftp_path).groups()
-        ftp_info = (ftp_info[0], DEFAULT_PASS, ftp_info[1])
-# if ftp_info[2]=='':
-# ftp_info=ftp_info[0:2]+('.',)
-    s_path = ftp_info[0]+ftp_info[2]
-    # ftp_info (user,password,dir)
-    ftp_info = ftp_info[0:2]+(parse_CH(ftp_info[2]),)
-    host, port = get_host_port(server)
-    return ftp_info, (host, port), s_path
-
-
-def get_local_path(ftp_path, file):
-    ftp_info, server_info, s_path = get_ftp_info(ftp_path)
-    p2 = r'.*\\(.*)\[.*\](.*)'
-    print(p2, file)
-    file_name = ''.join(match(p2, file).groups())
-    file_name = file_name.replace('_', ' ')
-    ftp_info += (file_name,)
-    # ftp_info (user,password,dir,filename)
+def get_local_path(ftp_path):
+    ftp_path = parse_CH(ftp_path)
+    ftp_info = list(match('ftp://(.*):(.*)@(.*?)((/.*){0,1}/(.*?))$',
+                          ftp_path).groups())
+    # ftp_info 
+    if ftp_info[4] is None:
+        ftp_info[4] = '/'
+    Info = namedtuple('Info', ['user', 'password', 'server', 'path', 'dir', 'file_name'])
+    ftp_info = Info(*ftp_info)
+    s_path = ftp_info.user + ftp_info.path
+    host, port = get_host_port(ftp_info.server)
     local_path, rules = load_setting()
     for k, v in rules:
-        result = match(k, s_path+file_name)
+        result = match(k, s_path)
         if not result is None:
             try:
-                match_path = parse_CH(result.group(1))
+                match_path = result.group(1)
                 local_path += v+'\\'+match_path
                 break
             except Exception:
-                local_path += v + file_name
+                local_path += v + ftp_info.file_name
     else:
-        local_path += file_name
+        local_path += ftp_info.file_name
     local_path = local_path.replace('/', '\\').replace('\\\\', '\\')
     print(local_path, type(local_path))
     makedirs(split(local_path)[0], exist_ok=True)
-    return local_path, ftp_info, server_info
+    return local_path, ftp_info, (host, port)
 
 
 def parse_CH(s):
@@ -93,9 +68,10 @@ def parse_CH(s):
 def main(file=None):
     if file is None:
         file = sys.argv[1]
-    dest, ftp_info, server_info = get_local_path(get_explorer_path(), file)
-    FTPDownloader.init(server_info, *ftp_info[0:2])
-    FTPDownloader.download(*ftp_info[2:], dest=dest)
+    dest, ftp_info, server_info = get_local_path(file)
+    # messager.warn(dest)
+    FTPDownloader.init(server_info, ftp_info.user, ftp_info.password)
+    FTPDownloader.download(ftp_info.dir, ftp_info.file_name, dest=dest)
 
 
 if __name__ == '__main__':
