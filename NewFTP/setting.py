@@ -1,6 +1,7 @@
 def get_host_port(server):
     if ':' in server:
-        return server.split(':')
+        host, port = server.split(':')
+        return host, int(port)
     else:
         return server, 21
 
