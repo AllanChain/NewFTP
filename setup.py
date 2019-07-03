@@ -26,20 +26,34 @@ def short_target(filename, dest, arg):
         persist_file.Save(shortcut_path, 0)
 
 
-def register(command):
-    import winreg
-    key = winreg.OpenKey(winreg.HKEY_CLASSES_ROOT,
-                         'ftp\\shell\\open\\command',
-                         0, winreg.KEY_WRITE)
-    winreg.SetValueEx(key, "", 0, winreg.REG_SZ, command)
-    try:
-        key = winreg.OpenKey(winreg.HKEY_CURRENT_USER,
-                             'Software\\Microsoft\\Windows\\Shell\\Associations'
-                             '\\UrlAssociations\\ftp\\UserChoice',
-                             0, winreg.KEY_WRITE)
-        winreg.SetValueEx(key, "Progid", 0, winreg.REG_SZ, "")
-    except FileNotFoundError:
-        pass
+def register(python_home):
+    from winreg import OpenKey, CreateKey, SetValueEx,\
+        REG_SZ, HKEY_LOCAL_MACHINE, HKEY_CURRENT_USER, KEY_WRITE
+
+    key = OpenKey(HKEY_LOCAL_MACHINE, 'SOFTWARE', 0, KEY_WRITE)
+    key = CreateKey(key, 'PyFTP')
+    key = CreateKey(key, 'Capabilities')
+    SetValueEx(key, 'ApplicationDescription', 0, REG_SZ, 'PyFTP')
+    SetValueEx(key, 'ApplicationIcon', 0, REG_SZ,
+               f'{python_home}\\pythonw.exe,0')
+    SetValueEx(key, 'ApplicationName', 0, REG_SZ, 'PyFTP')
+    key = CreateKey(key, 'UrlAssociations')
+    SetValueEx(key, 'ftp', 0, REG_SZ, 'PyFTPURL')
+    key = OpenKey(HKEY_LOCAL_MACHINE,
+                  'SOFTWARE\\RegisteredApplications', 0, KEY_WRITE)
+    SetValueEx(key, 'PyFTP', 0, REG_SZ, 'SOFTWARE\\PyFTP\\Capabilities')
+    key = OpenKey(HKEY_LOCAL_MACHINE, 'SOFTWARE\\Classes', 0, KEY_WRITE)
+    key = CreateKey(key, 'PyFTPURL')
+    SetValueEx(key, "", 0, REG_SZ, 'PyFTP Document')
+    SetValueEx(key, "FriendlyTypeName", 0, REG_SZ, 'PyFTP Document')
+    key = CreateKey(key, 'shell')
+    key = CreateKey(key, 'open')
+    key = CreateKey(key, 'command')
+    SetValueEx(key, "", 0, REG_SZ,
+               f'{python_home}\\pythonw.exe -m NewFTP.PyFTPHandler "%1"')
+    key = OpenKey(HKEY_CURRENT_USER, 'Software\\Microsoft\\Windows\\Shell'
+                  '\\Associations\\UrlAssociations\\ftp\\UserChoice', 0, KEY_WRITE)
+    SetValueEx(key, 'ProgId', 0, REG_SZ, 'PyFTPURL')
 
 
 class CustomInstall(install):
@@ -53,8 +67,7 @@ class CustomInstall(install):
             copytree(src, expanduser('~/.NewFTP'))
         short_target("FTP.lnk", '"%s\\pythonw.exe"' % split(executable)[0],
                      '-m NewFTP.NewFTP')
-        register('"{0}\\pythonw.exe" -m NewFTP.PyFTPHandler "\%1"'
-                 .format(split(executable)[0]))
+        register(split(executable)[0])
 
 
 with open("README.md", "r") as fh:
