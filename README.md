@@ -1,4 +1,9 @@
 # NewFTP
+
+**The master branch only works in Windows 7. To get Windows 10 support, go to branch `win10`**
+
+**Want the two branches be merged? Do not hesitate to contribute! **
+
 ### General
 A pygame powered GUI program to login the FTP system.
 It's open source, unlike any other distribution in TG.
