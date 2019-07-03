@@ -1,4 +1,11 @@
 # NewFTP
+
+**This is a branch supporting Windows 10**
+
+**Install as Administrator, as it will involve registry**
+
+**And I'm making it a separate repo(What about `FTPBridge`?) because it works so tricky on Win7 and Win7 itself will be deprecated soon**
+
 ### General
 A pygame powered GUI program to login the FTP system.
 It's open source, unlike any other distribution in TG.
@@ -101,10 +108,6 @@ You could see more example in the default configuration.
 ## TO DO
 #### Black Magic
 - Important Ones
-  - Find the better way to register PyFTPHandler.(current implementation is somewhat tricky)
-  - Test on the 32 bit Win7, which seems different from the 64 bit ones.
-    - if the 32 bit Win7 does not provide password in the address bar, read the config file to get it.
-  - ~~Support mixed underscores and spaces in the file name. (Win7 replaced spaces with underscores)~~ **Done with the help of `difflib`**
   - Maintainers please!
 - Less Important Ones
   - Add action config of the gui program:
@@ -112,7 +115,7 @@ You could see more example in the default configuration.
     - MiniDelayOnFocusLoss
     - OnAltF4
     - MiniAfterLogin
-  - Support regex match with file name included.
+  - ~~Support regex match with file name included.~~ **Done!**
   - Support break points for big file downloading.
   - Trace the opened file, if modified, ask if upload.
   - If local file is newer, ask upload.
@@ -122,7 +125,7 @@ You could see more example in the default configuration.
   - The `__main__.py` CLI.
 
 #### Good-looking Themes
-It is obvious that we are using Microsoft Windows7 theme. What if Linux theme or other awesome software, organizations?
+It is obvious that we are using Microsoft Windows7 theme. What if Linux theme or other awesome software, organizations? Or just fancy-looking color schemes?
 #### Advertising
 - Good things should be shared.
 - An experienced maintainer is welcomed.
